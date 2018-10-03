@@ -1,0 +1,4812 @@
+//Harikrishna Prabhu
+//3333077042
+//EE 569 HW-2
+################################################################
+################################################################ 
+
+Note:
+(1). All the programs were run using terminal and g++ compiler
+
+#################################################################
+#Program 1: Qa1_sq_circ_sq
+
+#include <stdio.h>
+#include <iostream>
+#include <stdlib.h>
+#include<math.h>
+
+using namespace std;
+
+int roundoff( float x);
+
+
+
+int main(int argc, char *argv[])
+{
+	// Define file pointer and variables
+	FILE *file;
+	int BytesPerPixel=3,window=3,size=0;
+	int width = 512 , height = 512; 
+	unsigned char *Imagedata= new unsigned char [width*height*3];
+	unsigned char *Image_Circle= new unsigned char [width*height*3];
+	unsigned char *Image_Square= new unsigned char [width*height*3];
+	//unsigned char Imagedata[512][512][3]={{{0}}};
+	//unsigned char Image_Circle[512][512][3]={{{0}}};
+	//variables for conversion
+	int l,m,xxx=0,yyy=0,sign_x=1,sign_y=1,uu=0,vv=0;
+	float x=0,y=0,xx=0,yy=0,uuu=0,vvv=0,u=0,v=0,den=0,diff_x=0,diff_y=0,diff_u=0,diff_v=0; //polar cordinates
+
+	if (!(file=fopen(argv[1],"rb"))) {
+		cout << "Cannot open file: " << argv[1] <<endl;
+		exit(1);
+	}
+	fread(Imagedata, sizeof(unsigned char), width*height*BytesPerPixel, file);
+	fclose(file);
+
+	for( int rgb=0; rgb<3; rgb++)
+	{
+		for(int i=0; i<height; i++) //loop 1
+		{
+			//cout<<"TIME:"<<i<<endl;
+			x=(float)(i-255)/256;
+
+			
+			
+			for(int j=0; j<width; j++) //loop 2
+			{
+				y=(float)(j-255)/256;
+
+				// Square to ellipse: (Major and minor axis same)
+				u = x * sqrt(1-(pow(y,2)/2));
+				u = (u*256)+255;
+
+
+				v = y * sqrt(1-(pow(x,2)/2));
+				v= (v*256)+255;
+				
+				l = roundoff(u);
+				diff_x=abs(u-l);
+
+				m = roundoff(v);
+				diff_y=abs(m-v);
+
+				//cout<<"x:"<<x<<"\tu:"<<l<<"\t Y:"<<y<<"\t v:"<<m<<endl;
+				
+				Image_Circle[(l*width*3)+(m*3)+rgb]=Imagedata[(i*width*3)+(j*3)+rgb]*(1-diff_x)*(1-diff_y) + Imagedata[(i*width*3)+((j+1)*3)+rgb]*(diff_x)*(1-diff_y) + Imagedata[((i+1)*width*3)+(j*3)+rgb]*(1-diff_x)*(diff_y) + Imagedata[((i+1)*width*3)+((j+1)*3)+rgb]*(diff_x)*(diff_y);
+				
+				//Circle to 
+				/*
+				uuu = (float)((u-255)/256);
+				vvv = (float)((v-255)/256);
+				//cout<<"u:"<<l<<"\tUuu:"<<uuu<<"\tv:"<<m<<"\t V:"<<vvv<<endl;
+				xx = 0.5*sqrt(2+pow(uuu,2)-pow(vvv,2)+(sqrt(2)*2*uuu)) - 0.5*sqrt(2+pow(uuu,2)-pow(vvv,2)-(sqrt(2)*2*uuu));
+				xx = (xx * 256) + 255;
+				xxx = roundoff(xx);
+				diff_u = abs(xx-xxx);
+				
+
+				yy = 0.5*sqrt(2-pow(uuu,2)+pow(vvv,2)+(sqrt(2)*2*vvv)) - 0.5*sqrt(2-pow(uuu,2)+pow(vvv,2)-(sqrt(2)*2*vvv));
+				yy = (yy*256) + 255;
+				yyy=roundoff(yy);
+				diff_v = abs(yy-yyy);
+			
+
+				uu=roundoff((uuu*256)+255);
+				vv=roundoff((vvv*256)+255);
+				//cout<<"UUU:"<<uuu<<"\tuu:"<<uu<<endl;
+				//cout<<"x:"<<xx<<"\tu:"<<uuu<<"\t Y:"<<yy<<"\t v:"<<vvv<<endl;
+				//cout<<"x:"<<xx<<"\tu:"<<x*256<<"\t Y:"<<yy<<"\t v:"<<y*256<<endl;
+				Image_Square[(i*width*3)+(j*3)+rgb]=Image_Circle[(uu*width*3)+(vv*3)+rgb]*(1-diff_u)*(1-diff_v) + Image_Circle[(uu*width*3)+((vv+1)*3)+rgb]*(diff_u)*(1-diff_v) + Image_Circle[((uu+1)*width*3)+(vv*3)+rgb]*(1-diff_u)*(diff_v) + Image_Circle[((uu+1)*width*3)+((vv+1)*3)+rgb]*(diff_u)*(diff_v);
+				*/
+			}
+			
+		}
+	}
+
+	for( int rgb=0; rgb<3; rgb++)
+	{
+		for(int i=0; i<height; i++) //loop 1
+		{
+			//cout<<"TIME:"<<i<<endl;
+			x=(float)(i-255)/256;
+
+			
+			
+			for(int j=0; j<width; j++) //loop 2
+			{
+				y=(float)(j-255)/256;
+
+				// Square to ellipse: (Major and minor axis same)
+				u = x * sqrt(1-(pow(y,2)/2));
+				u = (u*256)+255;
+
+
+				v = y * sqrt(1-(pow(x,2)/2));
+				v= (v*256)+255;
+				
+				l = roundoff(u);
+				diff_x=abs(u-l);
+
+				m = roundoff(v);
+				diff_y=abs(m-v);
+
+				
+				//Circle to 
+
+				uuu = (float)((u-255)/256);
+				vvv = (float)((v-255)/256);
+				//cout<<"u:"<<l<<"\tUuu:"<<uuu<<"\tv:"<<m<<"\t V:"<<vvv<<endl;
+				xx = 0.5*sqrt(2+pow(uuu,2)-pow(vvv,2)+(sqrt(2)*2*uuu)) - 0.5*sqrt(2+pow(uuu,2)-pow(vvv,2)-(sqrt(2)*2*uuu));
+				xx = (xx * 256) + 255;
+				xxx = roundoff(xx);
+				diff_u = abs(xx-xxx);
+				
+
+				yy = 0.5*sqrt(2-pow(uuu,2)+pow(vvv,2)+(sqrt(2)*2*vvv)) - 0.5*sqrt(2-pow(uuu,2)+pow(vvv,2)-(sqrt(2)*2*vvv));
+				yy = (yy*256) + 255;
+				yyy=roundoff(yy);
+				diff_v = abs(yy-yyy);
+			
+
+				uu=roundoff((uuu*256)+255);
+				vv=roundoff((vvv*256)+255);
+				//cout<<"UUU:"<<uuu<<"\tuu:"<<uu<<endl;
+				//cout<<"x:"<<xx<<"\tu:"<<uuu<<"\t Y:"<<yy<<"\t v:"<<vvv<<endl;
+				//cout<<"x:"<<xx<<"\tu:"<<x*256<<"\t Y:"<<yy<<"\t v:"<<y*256<<endl;
+				if(uu>=511)
+				{
+					uu=uu-1;
+				}
+				if(vv>=511)
+				{
+					vv=vv-1;
+				}
+				Image_Square[(i*width*3)+(j*3)+rgb]=Image_Circle[(uu*width*3)+(vv*3)+rgb]*(1-diff_u)*(1-diff_v) + Image_Circle[(uu*width*3)+((vv+1)*3)+rgb]*(diff_u)*(1-diff_v) + Image_Circle[((uu+1)*width*3)+(vv*3)+rgb]*(1-diff_u)*(diff_v) + Image_Circle[((uu+1)*width*3)+((vv+1)*3)+rgb]*(diff_u)*(diff_v);
+				
+			}
+			
+		}
+	}
+	
+	
+	
+
+
+
+
+	if (!(file=fopen(argv[2],"wb"))) {
+		cout << "Cannot open file: " << argv[2] << endl;
+		exit(1);
+	}
+	fwrite(Image_Circle, sizeof(unsigned char), width*height*BytesPerPixel, file);
+	fclose(file);
+	
+	if (!(file=fopen(argv[3],"wb"))) {
+		cout << "Cannot open file: " << argv[2] << endl;
+		exit(1);
+	}
+	fwrite(Image_Square, sizeof(unsigned char), width*height*BytesPerPixel, file);
+	fclose(file);
+	
+	return 0;
+}
+
+int roundoff(float num)
+{
+	float s = (int) num + 0.5;
+	if(num >= s)
+		return(s+0.5);
+	else
+		return(s-0.5);
+}
+
+##########################################################################################################
+#Program 2: Q1b_stitching
+#include <stdio.h>
+#include <iostream>
+#include <stdlib.h>
+#include<math.h>
+
+using namespace std;
+
+int roundoff( float x);
+
+
+
+int main(int argc, char *argv[])
+{
+	// Define file pointer and variables
+	FILE *file;
+	int BytesPerPixel=3,window=3,size=0;
+	int width = 480 , height = 640,i=0,j=0,j1=0,j2=0;
+	int w2=4*width,h2=height+1000; 
+	unsigned char *Imagedata_Left= new unsigned char [width*height*3];
+	unsigned char *Imagedata_Middle= new unsigned char [width*height*3];
+	unsigned char *Imagedata_Right= new unsigned char [width*height*3];
+	unsigned char *Newdata_Left= new unsigned char [width*height*3];
+	unsigned char *Newdata_Middle= new unsigned char [width*height*3];
+	unsigned char *Newdata_Right= new unsigned char [width*height*3];
+	int *flag= new int [width*height*3];
+	unsigned char *Newdata= new unsigned char [(w2)*(h2)*3];
+	float w22=0;
+	double h1[3][3]={{0}},hh[3][3]={{0}};
+	
+	/*
+	h1[0][0]=0.6071043490541;
+	h1[0][1]=-0.0169349323199;
+	h1[0][2]=-219.5991002439006;
+	h1[1][0]=  -0.0889728461031;
+	h1[1][1]=  0.7450888637769;
+	h1[1][2]=-132.2314446917980;
+	h1[2][0]=-0.0004097008650;
+	h1[2][1]= -0.0000512404093;
+	h1[2][2]= 1.1622223427094;
+	*/
+	//LEFT::MIDDLE
+	h1[0][0]=0.5035958997298;
+	h1[0][1]=-0.0116069821699;
+	h1[0][2]=-162.3952686517217;
+	h1[1][0]= -0.1670364399071;
+	h1[1][1]= 0.7019166034412;
+	h1[1][2]=-65.6165589961529;
+	h1[2][0]=-0.0005525895999;
+	h1[2][1]= -0.0000098826942;
+	h1[2][2]= 1.1820657827293;
+
+
+
+
+	hh[0][0]=1.178072615006;
+	hh[0][1]=0.010386917840;
+	hh[0][2]=-1122.859708549953;
+	hh[1][0]= 0.187658735801;
+	hh[1][1]= 1.095391190198;
+	hh[1][2]=-533.584464480850;
+	hh[2][0]=0.000648912703;
+	hh[2][1]= 0.000019366970;
+	hh[2][2]= 0.377074448145;
+
+	double xold[3]={0},yold=0,wold=0,xnew[3]={0};
+	int cnewx=0,cnewy=0;
+	//read images
+	/*for(int i=0;i<3;i++)
+	{
+		for(int j=0;j<3;j++)
+		{
+			cout<<h1[i][j]<<'\t';
+		}
+		cout<<'\n';
+	}*/
+
+	if (!(file=fopen(argv[1],"rb"))) {
+		cout << "Cannot open file: " << argv[1] <<endl;
+		exit(1);
+	}
+	fread(Imagedata_Left, sizeof(unsigned char), width*height*BytesPerPixel, file);
+	fclose(file);
+	
+	
+	if (!(file=fopen(argv[2],"rb"))) {
+		cout << "Cannot open file: " << argv[1] <<endl;
+		exit(1);
+	}
+	fread(Imagedata_Middle, sizeof(unsigned char), width*height*BytesPerPixel, file);
+	fclose(file);
+
+	if (!(file=fopen(argv[3],"rb"))) {
+		cout << "Cannot open file: " << argv[1] <<endl;
+		exit(1);
+	}
+	fread(Imagedata_Right, sizeof(unsigned char), width*height*BytesPerPixel, file);
+	fclose(file);
+
+	
+	for(int rgb=0; rgb<3; rgb++)
+	{
+		for(i=300;i<(height+300); i++)	
+		{
+			for(j=260+width; j<((2*width)+260); j++)
+			{
+
+					Newdata[((i)*(w2)*BytesPerPixel)+(j*BytesPerPixel)+rgb]=Imagedata_Middle[((i-300)*(width)*BytesPerPixel)+((j-260-width)*BytesPerPixel)+rgb];
+
+				
+			}
+		}
+	}
+
+	//left middle
+	for( int rgb=0;rgb<3;rgb++)
+	{
+		for(int i=0;i<h2;i++)
+		{
+			for(int j=0;j<w2;j++)
+			{
+
+				xnew[0]=i;
+				xnew[1]=j;
+				xnew[2]=1;
+				xold[0]= ((h1[0][0]*i)+(h1[0][1]*j)+(h1[0][2]));
+				xold[1]= ((h1[1][0]*i)+(h1[1][1]*j)+(h1[1][2]));
+				xold[2]= ((h1[2][0]*i)+(h1[2][1]*j)+(h1[2][2]));
+
+				cnewx=(int)round(xold[0]/xold[2]);
+				cnewy=(int)round(xold[1]/xold[2]);
+				//cout<<cnewx<<"\t"<<cnewy<<"\t"<<xold[2]<<endl;
+				if(cnewx>=0 && cnewx<width && cnewy>=0 && cnewy<height )
+				{
+					
+						//cout<<"Entered Y:\n";
+						//cout<<(cnewx)<<"\t"<<(cnewy)<<"\t"<<xold[2]<<endl;
+					
+					
+					if(cnewx>=260+width && cnewx<((2*width)+260) && cnewy>=100 && cnewy<(height+100))
+					{
+						cout<<"Yes"<<endl;
+						Newdata[((j)*(w2)*BytesPerPixel)+((i)*BytesPerPixel)+rgb]=(Imagedata_Left[((cnewy)*(width)*BytesPerPixel)+((cnewx)*BytesPerPixel)+rgb] + Imagedata_Left[((cnewy)*(width)*BytesPerPixel)+((cnewx)*BytesPerPixel)+rgb])/2;
+					}
+					else
+					{
+						Newdata[((j)*(w2)*BytesPerPixel)+((i)*BytesPerPixel)+rgb]=Imagedata_Left[((cnewy)*(width)*BytesPerPixel)+((cnewx)*BytesPerPixel)+rgb];
+						flag[((cnewy)*(width)*BytesPerPixel)+((cnewx)*BytesPerPixel)+rgb]=1;
+						Newdata_Right[((cnewy)*(width)*BytesPerPixel)+((cnewx)*BytesPerPixel)+rgb]=Imagedata_Left[((cnewy)*(width)*BytesPerPixel)+((cnewx)*BytesPerPixel)+rgb];
+					}
+						//}
+
+					
+				}
+			}
+		}
+	}
+	//right middle
+	
+	for( int rgb=0;rgb<3;rgb++)
+	{
+		for(int i=0;i<h2;i++)
+		{
+			for(int j=0;j<w2;j++)
+			{
+
+				xnew[0]=i;
+				xnew[1]=j;
+				xnew[2]=1;
+				xold[0]= ((hh[0][0]*i)+(hh[0][1]*j)+(hh[0][2]));
+				xold[1]= ((hh[1][0]*i)+(hh[1][1]*j)+(hh[1][2]));
+				xold[2]= ((hh[2][0]*i)+(hh[2][1]*j)+(hh[2][2]));
+
+				cnewx=(int)round(xold[0]/xold[2]);
+				cnewy=(int)round(xold[1]/xold[2]);
+				//cout<<cnewx<<"\t"<<cnewy<<"\t"<<xold[2]<<endl;
+				if(cnewx>=0 && cnewx<width && cnewy>=0 && cnewy<height )
+				{
+					
+						//cout<<"Entered Y:\n";
+						//cout<<(cnewx)<<"\t"<<(cnewy)<<endl;
+					//if(flag[((cnewy)*(width)*BytesPerPixel)+((cnewx)*BytesPerPixel)+rgb]==0)
+					//if(i>=(2*width)+260)
+						Newdata[((j)*(w2)*BytesPerPixel)+((i)*BytesPerPixel)+rgb]=Imagedata_Right[((cnewy)*(width)*BytesPerPixel)+((cnewx)*BytesPerPixel)+rgb];
+						//fl//ag[((cnewy)*(width)*BytesPerPixel)+((cnewx)*BytesPerPixel)+rgb]=1;
+						//Newdata_Right[((cnewy)*(width)*BytesPerPixel)+((cnewx)*BytesPerPixel)+rgb]=Imagedata_Left[((cnewy)*(width)*BytesPerPixel)+((cnewx)*BytesPerPixel)+rgb];
+					
+
+					
+				}
+			}
+		}
+	}
+	
+	
+	//write images
+	if (!(file=fopen(argv[4],"wb"))) {
+		cout << "Cannot open file: " << argv[2] << endl;
+		exit(1);
+	}
+	fwrite(Newdata, sizeof(unsigned char), (w2*h2)*BytesPerPixel, file);
+	fclose(file);
+	
+	/*
+	if (!(file=fopen(argv[5],"wb"))) {
+		cout << "Cannot open file: " << argv[2] << endl;
+		exit(1);
+	}
+	fwrite(Newdata_Middle, sizeof(unsigned char), width*height*BytesPerPixel, file);
+	fclose(file);
+	*/
+	/*
+	if (!(file=fopen(argv[4],"wb"))) {
+		cout << "Cannot open file: " << argv[2] << endl;
+		exit(1);
+	}
+	fwrite(Newdata_Right, sizeof(unsigned char), width*height*BytesPerPixel, file);
+	fclose(file);*/
+	return 0;
+	
+}
+
+
+#################################################################################################################################
+Program 3: q2a_Dithering
+
+#include <stdio.h>
+#include <iostream>
+#include <stdlib.h>
+#include<math.h>
+#include<random>
+
+
+using namespace std;
+
+
+unsigned char *fixed_Dithering(unsigned char *Image_data, int height, int width, int bytesPerPixel);
+unsigned char *random_Dithering(unsigned char *Image_data, int height, int width, int bytesPerPixel);
+unsigned char *matrix22_Dithering(unsigned char *Image_data, int height, int width, int bytesPerPixel);
+unsigned char *matrix44_Dithering(unsigned char *Image_data, int height, int width, int bytesPerPixel);
+unsigned char *matrix88_Dithering(unsigned char *Image_data, int height, int width, int bytesPerPixel);
+//unsigned char *grey4level(unsigned char *Image_data1,unsigned char *Image_data2, int height, int width, int bytesPerPixel);
+unsigned char *grey(unsigned char *Image1, unsigned char *Image2, int h,int w, int b);
+
+
+int main(int argc, char *argv[])
+{
+	// Define file pointer and variables
+	FILE *file;
+	int BytesPerPixel=1,N=2,width = 512 , height = 512,option=0;
+	
+	unsigned char rv=0; 
+	unsigned char *Imagedata= new unsigned char [width*height*BytesPerPixel];
+	unsigned char *newimage_Fixed= new unsigned char [width*height*BytesPerPixel];
+	unsigned char *newimage_random= new unsigned char [width*height*BytesPerPixel];
+	unsigned char *newimage_dithering22= new unsigned char [width*height*BytesPerPixel];
+	unsigned char *newimage_dithering44= new unsigned char [width*height*BytesPerPixel];
+	unsigned char *newimage_dithering88= new unsigned char [width*height*BytesPerPixel];
+	unsigned char *output_image= new unsigned char [width*height*BytesPerPixel];
+
+
+	cout<<"Enter the dithering you'd like to perform: They are,\n (1)fixed_Dithering\n (2)random_Dithering\n (3)matrix22_Dithering\n (4)matrix44_Dithering\n (5)matrix88_Dithering\n (6)All the above + 4 grey level image"<<endl;
+	cin>>option;
+
+
+	if (!(file=fopen(argv[1],"rb"))) {
+		cout << "Cannot open file: " << argv[1] <<endl;
+		exit(1);
+	}
+	fread(Imagedata, sizeof(unsigned char), width*height*BytesPerPixel, file);
+	fclose(file);
+
+
+	switch(option)
+	{
+		case 1:
+		{
+			newimage_Fixed=fixed_Dithering(Imagedata,height,width,BytesPerPixel);
+			if (!(file=fopen(argv[2],"wb"))) {
+				cout << "Cannot open file: " << argv[2] << endl;
+			exit(1);
+			}
+			fwrite(newimage_Fixed, sizeof(unsigned char), width*height*BytesPerPixel, file);
+			fclose(file);
+			break;
+
+		}
+		case 2:
+		{
+			newimage_random=random_Dithering(Imagedata,height,width,BytesPerPixel);
+			if (!(file=fopen(argv[3],"wb"))) {
+				cout << "Cannot open file: " << argv[2] << endl;
+			exit(1);
+			}
+			fwrite(newimage_random, sizeof(unsigned char), width*height*BytesPerPixel, file);
+			fclose(file);
+			break;
+		}
+		case 3:
+		{
+			newimage_dithering22=matrix22_Dithering(Imagedata,height,width,BytesPerPixel);
+			if (!(file=fopen(argv[4],"wb"))) {
+				cout << "Cannot open file: " << argv[2] << endl;
+			exit(1);
+			}
+			fwrite(newimage_dithering22, sizeof(unsigned char), width*height*BytesPerPixel, file);
+			fclose(file);
+			break;
+		}
+		case 4:
+		{
+			newimage_dithering44=matrix44_Dithering(Imagedata,height,width,BytesPerPixel);
+			if (!(file=fopen(argv[5],"wb"))) {
+				cout << "Cannot open file: " << argv[2] << endl;
+			exit(1);
+			}
+			fwrite(newimage_dithering44, sizeof(unsigned char), width*height*BytesPerPixel, file);
+			fclose(file);
+			break;
+		}
+		case 5:
+		{
+			newimage_dithering88=matrix88_Dithering(Imagedata,height,width,BytesPerPixel);
+			if (!(file=fopen(argv[6],"wb"))) {
+				cout << "Cannot open file: " << argv[2] << endl;
+			exit(1);
+			}
+			fwrite(newimage_dithering88, sizeof(unsigned char), width*height*BytesPerPixel, file);
+			fclose(file);
+			break;
+		}
+		case 6:
+		{
+			newimage_Fixed=fixed_Dithering(Imagedata,height,width,BytesPerPixel);
+			newimage_random=random_Dithering(Imagedata,height,width,BytesPerPixel);
+			newimage_dithering22=matrix22_Dithering(Imagedata,height,width,BytesPerPixel);
+			newimage_dithering44=matrix44_Dithering(Imagedata,height,width,BytesPerPixel);
+			newimage_dithering88=matrix88_Dithering(Imagedata,height,width,BytesPerPixel);
+			output_image=grey(newimage_dithering44,newimage_dithering88,height,width,BytesPerPixel);
+
+
+			//FIXED
+			if (!(file=fopen(argv[2],"wb"))) {
+				cout << "Cannot open file: " << argv[2] << endl;
+			exit(1);
+			}
+			fwrite(newimage_Fixed, sizeof(unsigned char), width*height*BytesPerPixel, file);
+			fclose(file);
+
+			//RANDOM
+			if (!(file=fopen(argv[3],"wb"))) {
+				cout << "Cannot open file: " << argv[2] << endl;
+			exit(1);
+			}
+			fwrite(newimage_random, sizeof(unsigned char), width*height*BytesPerPixel, file);
+			fclose(file);
+
+			//2x2
+			if (!(file=fopen(argv[4],"wb"))) {
+				cout << "Cannot open file: " << argv[2] << endl;
+			exit(1);
+			}
+			fwrite(newimage_dithering22, sizeof(unsigned char), width*height*BytesPerPixel, file);
+			fclose(file);
+
+			//4x4
+			if (!(file=fopen(argv[5],"wb"))) {
+				cout << "Cannot open file: " << argv[2] << endl;
+			exit(1);
+			}
+			fwrite(newimage_dithering44, sizeof(unsigned char), width*height*BytesPerPixel, file);
+			fclose(file);
+
+			//8x8
+			if (!(file=fopen(argv[6],"wb"))) {
+				cout << "Cannot open file: " << argv[2] << endl;
+			exit(1);
+			}
+			fwrite(newimage_dithering88, sizeof(unsigned char), width*height*BytesPerPixel, file);
+			fclose(file);
+
+
+			//4 grey levels
+			if (!(file=fopen(argv[7],"wb"))) {
+				cout << "Cannot open file: " << argv[2] << endl;
+			exit(1);
+			}
+			fwrite(output_image, sizeof(unsigned char), width*height*BytesPerPixel, file);
+			fclose(file);
+			break;
+
+
+
+		}
+	}
+
+	return 0;
+
+
+}
+//end of main program
+
+
+
+unsigned char *fixed_Dithering(unsigned char *Image_data, int height, int width, int bytesPerPixel)
+{
+	unsigned char *new_image = new unsigned char [width*height*bytesPerPixel];
+	int threshold_fixed=127;
+	for(int i=0 ; i<height ; i++)
+	{
+		for(int j=0; j<width ; j++)
+		{
+			if(Image_data[(i*width)+j]<threshold_fixed)
+			{
+				new_image[(i*width)+j]=0;
+			}
+			else if(Image_data[(i*width)+j]>=threshold_fixed)
+			{
+				new_image[(i*width)+j]=255;
+			}
+		}
+	}
+
+	return new_image;
+}
+unsigned char *random_Dithering(unsigned char *Imagedata, int height, int width, int bytesPerPixel)
+{
+	unsigned char *new_image = new unsigned char [width*height*bytesPerPixel];
+	//random number generator
+	unsigned char threshold_random=0;
+	random_device rd;
+	mt19937 gen(rd());
+	uniform_real_distribution<> dis(0,1);
+	/*for(int i =0 ; i<10 ;i++) //check random generator
+	{
+		rv=255*dis(gen);
+		cout<<(int)rv<<'\n';
+	}*/
+	for(int i=0 ; i<height ; i++)
+	{
+		for(int j=0; j<width ; j++)
+		{
+			threshold_random=255*dis(gen);
+			if((int)Imagedata[(i*width)+j]<(int)threshold_random)
+			{
+				new_image[(i*width)+j]=0;
+			}
+			else if((int)Imagedata[(i*width)+j]>=(int)threshold_random)
+			{
+				new_image[(i*width)+j]=255;
+			}
+		}
+	}
+	return new_image;
+
+}
+unsigned char *matrix22_Dithering(unsigned char *Image_data, int height, int width, int bytesPerPixel)
+{
+	unsigned char *new_image = new unsigned char [width*height*bytesPerPixel];
+	unsigned char I[2][2]={ { 1, 2 },{ 3, 0 } },x=0,y=0;
+	int N=2;
+	float threshold_matrix=0;
+
+	cout<<"The 2x2 Dithering matrix:\n";
+	for(int i =0;i<2;i++)
+	{
+		for(int j=0; j<2 ;j++)
+			cout<<(int)I[i][j]<<'\t';
+		cout<<"\n";
+	}
+
+
+	for(int i=0; i<height ;i++)
+	{
+		for(int j=0; j<width ;j++)
+		{
+			x= i%N;
+			y= j%N;
+			//cout<<"x="<<(int)x<<endl;
+			threshold_matrix = ((I[x][y]+0.5)/pow(N,2)*255);
+			//cout<<"threshold_matrix="<<(int)threshold_matrix<<endl;
+			if((int)Image_data[(i*width)+j]<=(int)threshold_matrix)
+			{
+				new_image[(i*width)+j]=0;
+			}
+			else if((int)Image_data[(i*width)+j]>(int)threshold_matrix)
+			{
+				new_image[(i*width)+j]=255;
+			}
+		}
+	}
+	return new_image;
+}
+
+
+unsigned char *matrix44_Dithering(unsigned char *Image_data, int height, int width, int bytesPerPixel)
+{
+	unsigned char *new_image = new unsigned char [width*height*bytesPerPixel];
+	unsigned char I[4][4]={ {5,9,6,10}, {13,1,14,2}, {7,11,4,8}, {15,3,12,0} },x=0,y=0;
+	int N=4;
+	float threshold_matrix=0;
+
+	cout<<"The 4x4 Dithering matrix:\n";
+	for(int i =0;i<4;i++)
+	{
+		for(int j=0; j<4 ;j++)
+			cout<<(int)I[i][j]<<'\t';
+		cout<<"\n";
+	}
+
+
+	for(int i=0; i<height ;i++)
+	{
+		for(int j=0; j<width ;j++)
+		{
+			x= i%N;
+			y= j%N;
+			//cout<<"x="<<(int)x<<endl;
+			threshold_matrix = ((I[x][y]+0.5)/pow(N,2)*255);
+			//cout<<"threshold_matrix="<<(int)threshold_matrix<<endl;
+			if((int)Image_data[(i*width)+j]<=(int)threshold_matrix)
+			{
+				new_image[(i*width)+j]=0;
+			}
+			else if((int)Image_data[(i*width)+j]>(int)threshold_matrix)
+			{
+				new_image[(i*width)+j]=255;
+			}
+		}
+	}
+	return new_image;
+}
+unsigned char *matrix88_Dithering(unsigned char *Image_data, int height, int width, int bytesPerPixel)
+{
+	unsigned char *new_image = new unsigned char [width*height*bytesPerPixel];
+	unsigned char I[8][8]={ {21,37,25,41,22,38,26,42}, {53,5,57,9,54,6,58,10}, {29,45,17,33,30,46,18,34}, {61,13,49,1,62,14,50,2},{23,39,27,43,20,36,24,40},{55,7,59,11,52,4,56,8},{31,47,19,35,28,44,16,32},{63,15,51,3,60,12,48,0} },x=0,y=0;
+	int N=8;
+	float threshold_matrix=0;
+
+	cout<<"The 8x8 Dithering matrix:\n";
+	for(int i =0;i<8;i++)
+	{
+		for(int j=0; j<8 ;j++)
+			cout<<(int)I[i][j]<<'\t';
+		cout<<"\n";
+	}
+
+
+	for(int i=0; i<height ;i++)
+	{
+		for(int j=0; j<width ;j++)
+		{
+			x= i%N;
+			y= j%N;
+			//cout<<"x="<<(int)x<<endl;
+			threshold_matrix = ((I[x][y]+0.5)/pow(N,2)*255);
+			//cout<<"threshold_matrix="<<(int)threshold_matrix<<endl;
+			if((int)Image_data[(i*width)+j]<=(int)threshold_matrix)
+			{
+				new_image[(i*width)+j]=0;
+			}
+			else if((int)Image_data[(i*width)+j]>(int)threshold_matrix)
+			{
+				new_image[(i*width)+j]=255;
+			}
+		}
+	}
+	return new_image;
+}
+
+unsigned char *grey(unsigned char *Image_data1,unsigned char *Image_data2, int height, int width, int bytesPerPixel)
+{
+	unsigned char *new_image = new unsigned char [width*height*bytesPerPixel];
+	for( int i=0; i<height; i++)
+	{
+		for(int j=0; j<width; j++)
+		{
+			if(Image_data1[(i*width)+j]==0 && Image_data2[(i*width)+j]==0)
+			{
+				new_image[(i*width)+j]=0;
+			}
+
+			else if(Image_data1[(i*width)+j]==0 && Image_data2[(i*width)+j]==255)
+			{
+				new_image[(i*width)+j]=85;
+			}
+			else if(Image_data1[(i*width)+j]==255 && Image_data2[(i*width)+j]==0)
+			{
+				new_image[(i*width)+j]=170;
+			}
+			else if(Image_data1[(i*width)+j]==255 && Image_data2[(i*width)+j]==255)
+			{
+				new_image[(i*width)+j]=255;
+			}
+		}
+	}
+
+	return new_image;
+
+}
+
+######################################################################################################
+Program 4: error_diff.cpp
+
+#include <stdio.h>
+#include <iostream>
+#include <stdlib.h>
+#include<math.h>
+
+
+
+using namespace std;
+unsigned char *floyd_stienberg(unsigned char *Image_data1, int height, int width, int bytesPerPixel);
+unsigned char *JJN(unsigned char *Image_data2, int height, int width, int bytesPerPixel);
+unsigned char *stucki(unsigned char *Image_data3, int height, int width, int bytesPerPixel);
+
+int main(int argc, char *argv[])
+{
+	// Define file pointer and variables
+	FILE *file;
+	int BytesPerPixel=1,N=2,width = 512 , height = 512,option=0,op=1;
+	
+	unsigned char *Imagedata= new unsigned char [width*height*BytesPerPixel];
+	unsigned char *newimage_FS= new unsigned char [width*height*BytesPerPixel];
+	unsigned char *newimage_JJN= new unsigned char [width*height*BytesPerPixel];
+	unsigned char *newimage_ST= new unsigned char [width*height*BytesPerPixel];
+
+
+	if (!(file=fopen(argv[1],"rb"))) {
+		cout << "Cannot open file: " << argv[1] <<endl;
+		exit(1);
+	}
+	fread(Imagedata, sizeof(unsigned char), width*height*BytesPerPixel, file);
+	fclose(file);
+
+	cout<<"Choose a type of error diffusion:\n(1). Floyd Steinberg\n(2).Jarvis Judice and Ninke\n(3).Stucki\n";
+	cin>>option;
+	
+	switch(option)
+	{
+		case 1:
+		{
+			newimage_FS=floyd_stienberg(Imagedata,height,width,BytesPerPixel);
+			if (!(file=fopen(argv[2],"wb"))) {
+			cout << "Cannot open file: " << argv[2] << endl;
+			exit(1);
+			}
+			fwrite(newimage_FS, sizeof(unsigned char), width*height*BytesPerPixel, file);
+			fclose(file);
+			break;
+		}
+		case 2:
+		{
+			newimage_JJN=JJN(Imagedata,height,width,BytesPerPixel);
+			if (!(file=fopen(argv[3],"wb"))) {
+			cout << "Cannot open file: " << argv[2] << endl;
+			exit(1);
+			}
+			fwrite(newimage_JJN, sizeof(unsigned char), width*height*BytesPerPixel, file);
+			fclose(file);
+			break;
+		}
+		case 3:
+		{
+			newimage_ST=stucki(Imagedata,height,width,BytesPerPixel);
+			if (!(file=fopen(argv[4],"wb"))) {
+			cout << "Cannot open file: " << argv[2] << endl;
+			exit(1);
+			}
+			fwrite(newimage_ST, sizeof(unsigned char), width*height*BytesPerPixel, file);
+			fclose(file);
+			break;
+		}
+
+	}
+	
+
+	return 0;
+}
+//end of main
+
+
+unsigned char *floyd_stienberg(unsigned char *newimage, int height, int width, int bytesPerPixel)
+{
+	float o=0,e=0;
+	for(int i=0; i<height; i++)
+	{
+			if(i%2==0)
+			{
+				
+				for(int j=0; j<width; j++)
+				{
+					o=newimage[( (i)*width )+ j ];
+					if(o < 255-o)
+					{
+						newimage[ ( (i)*width )+ j ]=0;
+						e=o;
+					}
+					else 
+					{
+						newimage[ ( (i)*width )+ j ]=255;
+						e=o-255;
+					}
+					//
+					if(j+1<width)
+					{
+						newimage[( (i)*width )+ (j+1)] += (unsigned char)(round)(e*7/16.0);
+						newimage[( (i)*width )+ (j+1)] = (newimage[( (i)*width )+ (j+1)]>255)?255:newimage[( (i)*width )+ (j+1)];
+						newimage[( (i)*width )+ (j+1)] = (newimage[( (i)*width )+ (j+1)]<0)?0:newimage[( (i)*width )+ (j+1)];
+					}
+					if(i+1<height && j > 0)
+					{
+					 	newimage[( (i+1)*width )+ (j-1)] += (unsigned char)(round)(e*3/16.0);
+					 	newimage[( (i+1)*width )+ (j-1)]=(newimage[( (i+1)*width )+ (j-1)]>255)?255:newimage[( (i+1)*width )+ (j-1)];
+					 	newimage[( (i+1)*width )+ (j-1)]=(newimage[( (i+1)*width )+ (j-1)]<0)?0:newimage[( (i+1)*width )+ (j-1)];
+
+					}
+					if(i+1<height)
+					{
+						newimage[( (i+1)*width )+ (j)] += (unsigned char)(round)(e*5/16.0);
+					 	newimage[( (i+1)*width )+ (j)] = (newimage[( (i+1)*width )+ (j)]>255)?255:newimage[( (i+1)*width )+ (j)];
+					 	newimage[( (i+1)*width )+ (j)] = (newimage[( (i+1)*width )+ (j)]<0)?0:newimage[( (i+1)*width )+ (j)];
+					}
+					if(i+1<height && j+1<width)
+					{
+						//cout<<"#"<<i<<":"<<j<<"\t i+1 : j+1"<<endl;
+						newimage[( (i+1)*width )+ (j+1)] +=(unsigned char)(round) (e*1/16.0);
+						newimage[( (i+1)*width )+ (j+1)] = (newimage[( (i+1)*width )+ (j+1)]>255)?255:newimage[( (i+1)*width )+ (j+1)];
+					}
+					
+
+					
+				}
+			}
+			
+			else
+			{
+				
+				for(int j=width-1; j>=0; j--)
+				{
+					
+					//cout<<"#"<<i<<":"<<j<<"\tleft\n";
+					//cout<<'\t'<<j<<endl;
+				
+					o=newimage[( (i)*width )+ j ];
+					//cout<<"#"<<i<<":"<<j<<"o :"<<(int)o<<'\t';//<<endl;
+					
+					if(o < 255-o)
+					{
+						//cout<<"\t ohooooo";
+						newimage[ ( (i)*width )+ j ]=0;
+						e=o;
+					}
+					
+					else 
+					{
+						//cout<<"\t ohhhhhh\t";
+						newimage[ ( (i)*width )+ j ]=255;
+						e=o-255;
+					}
+					
+					//cout<<"o  new:"<<e<<endl;
+					
+					//e=Imagedata[( (i)*width )+ (j)]-newimage_Fixed[( (i)*width )+ (j)];
+					if(j>0)
+					{
+						//cout<<"#"<<i<<":"<<j<<"\t i : j+1"<<endl;
+						newimage[( (i)*width )+ (j-1)] = newimage[( (i)*width )+ (j-1)] + (unsigned char)(round)(e*7/16.0);
+						newimage[( (i)*width )+ (j-1)] =(newimage[( (i)*width )+ (j-1)]>255)?255:newimage[( (i)*width )+ (j-1)];
+						newimage[( (i)*width )+ (j-1)] =(newimage[( (i)*width )+ (j-1)]<0)?0:newimage[( (i)*width )+ (j-1)];
+					}
+					if(i+1<height && j > 0)
+					{
+						//cout<<"#"<<i<<":"<<j<<"\t i+1 : j-1"<<endl;
+						//cout<<"#"<<i<<":"<<j<<"\t i+1 : j"<<endl;
+					 	newimage[( (i+1)*width )+ (j-1)] = newimage[( (i+1)*width )+ (j-1)]+(unsigned char)(round)(e*1/16.0);
+					 	newimage[( (i+1)*width )+ (j-1)] = (newimage[( (i+1)*width )+ (j-1)]>255)?255:newimage[( (i+1)*width )+ (j-1)];
+					 	newimage[( (i+1)*width )+ (j-1)] = (newimage[( (i+1)*width )+ (j-1)]<0)?0:newimage[( (i+1)*width )+ (j-1)];
+
+					}
+					if(i+1<height)
+					{
+						newimage[( (i+1)*width )+ (j)] = newimage[( (i+1)*width )+ (j)]+ (unsigned char)(round)(e*5/16.0);
+					 	newimage[( (i+1)*width )+ (j)] = (newimage[( (i+1)*width )+ (j)]>255)?255:newimage[( (i+1)*width )+ (j)];
+					 	newimage[( (i+1)*width )+ (j)] = (newimage[( (i+1)*width )+ (j)]<0)?0:newimage[( (i+1)*width )+ (j)];
+					}
+					if(i+1<height && j>0)
+					{
+						//cout<<"#"<<i<<":"<<j<<"\t i+1 : j+1"<<endl;
+						newimage[( (i+1)*width )+ (j-1)] = newimage[( (i+1)*width )+ (j-1)]+(unsigned char)(round)(e*1/16.0);
+						newimage[( (i+1)*width )+ (j-1)] = (newimage[( (i+1)*width )+ (j-1)]>255)?255:newimage[( (i+1)*width )+ (j-1)];
+						newimage[( (i+1)*width )+ (j-1)] = (newimage[( (i+1)*width )+ (j-1)]<0)?0:newimage[( (i+1)*width )+ (j-1)];
+					}
+
+				}
+			}
+	}
+	return newimage;
+}
+unsigned char *JJN(unsigned char *newimage_FS, int height, int width, int bytesPerPixel)
+{
+	float o=0,e=0;
+	for(int i=2; i<height-2; i++)
+	{
+		for(int j=2; j<width-2 ;j++)
+		{
+			o=newimage_FS[( (i)*width )+ j ];
+			//cout<<"#"<<i<<":"<<j<<"o :"<<(int)o<<'\t';//<<endl;
+					
+			if(o < 255-o)
+			{
+				//cout<<"\t ohooooo";
+				newimage_FS[ ( (i)*width )+ j ]=0;
+				e=o;
+			}
+					
+			else 
+			{
+				//cout<<"\t ohhhhhh\t";
+				newimage_FS[ ( (i)*width )+ j ]=255;
+				e=o-255;
+			}
+			/*
+			if(j+1<width)
+			{
+				//cout<<"#"<<i<<":"<<j<<"\t i : j+1"<<endl;
+				newimage_FS[( (i)*width )+ (j+1)] += (e*7/16.0);
+			}
+			if(i+1<height && j > 0)
+			{
+				//cout<<"#"<<i<<":"<<j<<"\t i+1 : j-1"<<endl;
+				//cout<<"#"<<i<<":"<<j<<"\t i+1 : j"<<endl;
+				newimage_FS[( (i+1)*width )+ (j-1)] += (e*3/16.0);
+				newimage_FS[( (i+1)*width )+ (j)] += (e*5/16.0);
+			}
+			if(i+1<height && j+1<width)
+			{
+				//cout<<"#"<<i<<":"<<j<<"\t i+1 : j+1"<<endl;
+				newimage_FS[( (i+1)*width )+ (j+1)] += (e*1/16.0);
+			}
+			*/
+			//1
+			newimage_FS[( (i)*width )+ (j+1)] = newimage_FS[( (i)*width )+ (j+1)] + (unsigned char)(round)(e*7/48.0);
+			newimage_FS[( (i)*width )+ (j+1)] = (newimage_FS[( (i)*width )+ (j+1)]>255)?255:newimage_FS[( (i)*width )+ (j+1)];
+			newimage_FS[( (i)*width )+ (j+1)] = (newimage_FS[( (i)*width )+ (j+1)]<0)?0:newimage_FS[( (i)*width )+ (j+1)];
+
+			//2
+			newimage_FS[( (i)*width )+ (j+2)] = newimage_FS[( (i)*width )+ (j+2)] + (unsigned char)(round)(e*5/48.0);
+			newimage_FS[( (i)*width )+ (j+2)] = (newimage_FS[( (i)*width )+ (j+2)]>255)?255:newimage_FS[( (i)*width )+ (j+2)];
+			newimage_FS[( (i)*width )+ (j+2)] = (newimage_FS[( (i)*width )+ (j+2)]<0)?0:newimage_FS[( (i)*width )+ (j+2)];
+
+
+			//3
+			newimage_FS[( (i+1)*width )+ (j-2)] = newimage_FS[( (i+1)*width )+ (j-2)] + (unsigned char)(round)(e*3/48.0);
+			newimage_FS[( (i+1)*width )+ (j-2)] = (newimage_FS[( (i+1)*width )+ (j-2)]>255)?255:newimage_FS[( (i+1)*width )+ (j-2)];
+			newimage_FS[( (i+1)*width )+ (j-2)] = (newimage_FS[( (i+1)*width )+ (j-2)]<0)?0:newimage_FS[( (i+1)*width )+ (j-2)];
+
+			//4
+			newimage_FS[( (i+1)*width )+ (j-1)] = newimage_FS[( (i+1)*width )+ (j-1)] + (unsigned char)(round)(e*5/48.0);
+			newimage_FS[( (i+1)*width )+ (j-1)] = (newimage_FS[( (i+1)*width )+ (j-1)]>255)?255:newimage_FS[( (i+1)*width )+ (j-1)];
+			newimage_FS[( (i+1)*width )+ (j-1)] = (newimage_FS[( (i+1)*width )+ (j-1)]<0)?0:newimage_FS[( (i+1)*width )+ (j-1)];
+
+			//5
+			newimage_FS[( (i+1)*width )+ (j)] = newimage_FS[( (i+1)*width )+ (j)] + (unsigned char)(round)(e*7/48.0);
+			newimage_FS[( (i+1)*width )+ (j)] = (newimage_FS[( (i+1)*width )+ (j)]>255)?255:newimage_FS[( (i+1)*width )+ (j)];
+			newimage_FS[( (i+1)*width )+ (j)] = (newimage_FS[( (i+1)*width )+ (j)]<0)?0:newimage_FS[( (i+1)*width )+ (j)];
+
+			//6
+			newimage_FS[( (i+1)*width )+ (j+1)] = newimage_FS[( (i+1)*width )+ (j+1)] + (unsigned char)(round)(e*5/48.0);
+			newimage_FS[( (i+1)*width )+ (j+1)] = (newimage_FS[( (i+1)*width )+ (j+1)]>255)?255:newimage_FS[( (i+1)*width )+ (j+1)];
+			newimage_FS[( (i+1)*width )+ (j+1)] = (newimage_FS[( (i+1)*width )+ (j+1)]<0)?0:newimage_FS[( (i+1)*width )+ (j+1)];
+
+			//7
+			newimage_FS[( (i+1)*width )+ (j+2)] = newimage_FS[( (i+1)*width )+ (j+2)] + (unsigned char)(round)(e*3/48.0);
+			newimage_FS[( (i+1)*width )+ (j+2)] = (newimage_FS[( (i+1)*width )+ (j+2)]>255)?255:newimage_FS[( (i+1)*width )+ (j+2)];
+			newimage_FS[( (i+1)*width )+ (j+2)] =(newimage_FS[( (i+1)*width )+ (j+2)]<0)?0:newimage_FS[( (i+1)*width )+ (j+2)];
+			
+			//8
+			newimage_FS[( (i+2)*width )+ (j-2)] = newimage_FS[( (i+2)*width )+ (j-2)] + (unsigned char)(round)(e*1/48.0);
+			newimage_FS[( (i+2)*width )+ (j-2)] = (newimage_FS[( (i+2)*width )+ (j-2)]>255)?255:newimage_FS[( (i+2)*width )+ (j-2)];
+			newimage_FS[( (i+2)*width )+ (j-2)] = (newimage_FS[( (i+2)*width )+ (j-2)]<0)?0:newimage_FS[( (i+2)*width )+ (j-2)];
+
+
+			//9
+			newimage_FS[( (i+2)*width )+ (j-1)] = newimage_FS[( (i+2)*width )+ (j-1)] + (unsigned char)(round)(e*3/48.0);
+			newimage_FS[( (i+2)*width )+ (j-1)] =(newimage_FS[( (i+2)*width )+ (j-1)]>255)?255:newimage_FS[( (i+2)*width )+ (j-1)];
+			newimage_FS[( (i+2)*width )+ (j-1)] = (newimage_FS[( (i+2)*width )+ (j-1)]<0)?0:newimage_FS[( (i+2)*width )+ (j-1)];
+
+			//10
+			newimage_FS[( (i+2)*width )+ (j)] = newimage_FS[( (i+2)*width )+ (j)] + (unsigned char)(round)(e*5/48.0);
+			newimage_FS[( (i+2)*width )+ (j)] = (newimage_FS[( (i+2)*width )+ (j)]>255)?255:newimage_FS[( (i+2)*width )+ (j)];
+			newimage_FS[( (i+2)*width )+ (j)] =(newimage_FS[( (i+2)*width )+ (j)]<0)?0:newimage_FS[( (i+2)*width )+ (j)];
+
+			//11
+			newimage_FS[( (i+2)*width )+ (j+1)] = newimage_FS[( (i+2)*width )+ (j+1)] + (unsigned char)(round)(e*3/48.0);
+			newimage_FS[( (i+2)*width )+ (j+1)] =(newimage_FS[( (i+2)*width )+ (j+1)]>255)?255:newimage_FS[( (i+2)*width )+ (j+1)];
+			newimage_FS[( (i+2)*width )+ (j+1)] =(newimage_FS[( (i+2)*width )+ (j+1)]<0)?0:newimage_FS[( (i+2)*width )+ (j+1)];
+
+			//12
+			newimage_FS[( (i+2)*width )+ (j+2)] = newimage_FS[( (i+2)*width )+ (j+2)] + (unsigned char)(round)(e*1/48.0);
+			newimage_FS[( (i+2)*width )+ (j+2)] = (newimage_FS[( (i+2)*width )+ (j+2)]>255)?255:newimage_FS[( (i+2)*width )+ (j+2)];
+			newimage_FS[( (i+2)*width )+ (j+2)] = (newimage_FS[( (i+2)*width )+ (j+2)]<0)?0:newimage_FS[( (i+2)*width )+ (j+2)];
+
+			
+					
+
+					
+		}
+	}	
+	return newimage_FS;
+
+}
+
+unsigned char *stucki(unsigned char *newimage1, int height, int width, int bytesPerPixel)
+{
+	float o=0,e=0;
+	for(int i=0; i<height-2; i++)
+	{
+		for(int j=2; j<width-2 ;j++)
+		{
+			o=newimage1[( (i)*width )+ j ];
+			//cout<<"#"<<i<<":"<<j<<"o :"<<(int)o<<'\t';//<<endl;
+					
+			if(o < 255-o)
+			{
+				//cout<<"\t ohooooo";
+				newimage1[ ( (i)*width )+ j ]=0;
+				e=o;
+			}
+					
+			else 
+			{
+				//cout<<"\t ohhhhhh\t";
+				newimage1[ ( (i)*width )+ j ]=255;
+				e=o-255;
+			}
+			/*
+			if(j+1<width)
+			{
+				//cout<<"#"<<i<<":"<<j<<"\t i : j+1"<<endl;
+				newimage_FS[( (i)*width )+ (j+1)] += (e*7/16.0);
+			}
+			if(i+1<height && j > 0)
+			{
+				//cout<<"#"<<i<<":"<<j<<"\t i+1 : j-1"<<endl;
+				//cout<<"#"<<i<<":"<<j<<"\t i+1 : j"<<endl;
+				newimage_FS[( (i+1)*width )+ (j-1)] += (e*3/16.0);
+				newimage_FS[( (i+1)*width )+ (j)] += (e*5/16.0);
+			}
+			if(i+1<height && j+1<width)
+			{
+				//cout<<"#"<<i<<":"<<j<<"\t i+1 : j+1"<<endl;
+				newimage_FS[( (i+1)*width )+ (j+1)] += (e*1/16.0);
+			}
+			*/
+			//1
+			newimage1[( (i)*width )+ (j+1)] = newimage1[( (i)*width )+ (j+1)] + (unsigned char)(round)(e*8/42.0);
+			newimage1[( (i)*width )+ (j+1)] = (newimage1[( (i)*width )+ (j+1)]>255)?255:newimage1[( (i)*width )+ (j+1)];
+			newimage1[( (i)*width )+ (j+1)] = (newimage1[( (i)*width )+ (j+1)]<0)?0:newimage1[( (i)*width )+ (j+1)];
+
+			//2
+			newimage1[( (i)*width )+ (j+2)] = newimage1[( (i)*width )+ (j+2)] + (unsigned char)(round)(e*4/42.0);
+			newimage1[( (i)*width )+ (j+2)] = (newimage1[( (i)*width )+ (j+2)]>255)?255:newimage1[( (i)*width )+ (j+2)];
+			newimage1[( (i)*width )+ (j+2)] = (newimage1[( (i)*width )+ (j+2)]<0)?0:newimage1[( (i)*width )+ (j+2)];
+
+			//3
+			newimage1[( (i+1)*width )+ (j-2)] = newimage1[( (i+1)*width )+ (j-2)] + (unsigned char)(round)(e*2/42.0);
+			newimage1[( (i+1)*width )+ (j-2)] = (newimage1[( (i+1)*width )+ (j-2)]>255)?255:newimage1[( (i+1)*width )+ (j-2)];
+			newimage1[( (i+1)*width )+ (j-2)] = (newimage1[( (i+1)*width )+ (j-2)]<0)?0:newimage1[( (i+1)*width )+ (j-2)];
+
+			//4
+			newimage1[( (i+1)*width )+ (j-1)] = newimage1[( (i+1)*width )+ (j-1)] + (unsigned char)(round)(e*4/42.0);
+			newimage1[( (i+1)*width )+ (j-1)] = (newimage1[( (i+1)*width )+ (j-1)]>255)?255:newimage1[( (i+1)*width )+ (j-1)];
+			newimage1[( (i+1)*width )+ (j-1)] = (newimage1[( (i+1)*width )+ (j-1)]<0)?0:newimage1[( (i+1)*width )+ (j-1)];
+
+			//5
+			newimage1[( (i+1)*width )+ (j)] = newimage1[( (i+1)*width )+ (j)] + (unsigned char)(round)(e*8/42.0);
+			newimage1[( (i+1)*width )+ (j)] = (newimage1[( (i+1)*width )+ (j)]>255)?255:newimage1[( (i+1)*width )+ (j)];
+			newimage1[( (i+1)*width )+ (j)] = (newimage1[( (i+1)*width )+ (j)]<0)?0:newimage1[( (i+1)*width )+ (j)];
+
+			//6
+			newimage1[( (i+1)*width )+ (j+1)] = newimage1[( (i+1)*width )+ (j+1)] + (unsigned char)(round)(e*4/42.0);
+			newimage1[( (i+1)*width )+ (j+1)] = (newimage1[( (i+1)*width )+ (j+1)]>255)?255:newimage1[( (i+1)*width )+ (j+1)];
+			newimage1[( (i+1)*width )+ (j+1)] = (newimage1[( (i+1)*width )+ (j+1)]<0)?0:newimage1[( (i+1)*width )+ (j+1)];
+
+			//7
+			newimage1[( (i+1)*width )+ (j+2)] = newimage1[( (i+1)*width )+ (j+2)] + (unsigned char)(round)(e*2/42.0);
+			newimage1[( (i+1)*width )+ (j+2)] = (newimage1[( (i+1)*width )+ (j+2)]>255)?255:newimage1[( (i+1)*width )+ (j+2)];
+			newimage1[( (i+1)*width )+ (j+2)] =(newimage1[( (i+1)*width )+ (j+2)]<0)?0:newimage1[( (i+1)*width )+ (j+2)];
+
+			//8
+			newimage1[( (i+2)*width )+ (j-2)] = newimage1[( (i+2)*width )+ (j-2)] + (unsigned char)(round)(e*1/42.0);
+			newimage1[( (i+2)*width )+ (j-2)] = (newimage1[( (i+2)*width )+ (j-2)]>255)?255:newimage1[( (i+2)*width )+ (j-2)];
+			newimage1[( (i+2)*width )+ (j-2)] = (newimage1[( (i+2)*width )+ (j-2)]<0)?0:newimage1[( (i+2)*width )+ (j-2)];
+
+			//9
+			newimage1[( (i+2)*width )+ (j-1)] = newimage1[( (i+2)*width )+ (j-1)] + (unsigned char)(round)(e*2/42.0);
+			newimage1[( (i+2)*width )+ (j-1)] =(newimage1[( (i+2)*width )+ (j-1)]>255)?255:newimage1[( (i+2)*width )+ (j-1)];
+			newimage1[( (i+2)*width )+ (j-1)] = (newimage1[( (i+2)*width )+ (j-1)]<0)?0:newimage1[( (i+2)*width )+ (j-1)];
+
+			//10
+			newimage1[( (i+2)*width )+ (j)] = newimage1[( (i+2)*width )+ (j)] + (unsigned char)(round)(e*4/42.0);	
+			newimage1[( (i+2)*width )+ (j)] = (newimage1[( (i+2)*width )+ (j)]>255)?255:newimage1[( (i+2)*width )+ (j)];
+			newimage1[( (i+2)*width )+ (j)] =(newimage1[( (i+2)*width )+ (j)]<0)?0:newimage1[( (i+2)*width )+ (j)];
+
+			//11
+			newimage1[( (i+2)*width )+ (j+1)] = newimage1[( (i+2)*width )+ (j+1)] + (unsigned char)(round)(e*2/42.0);
+			newimage1[( (i+2)*width )+ (j+1)] =(newimage1[( (i+2)*width )+ (j+1)]>255)?255:newimage1[( (i+2)*width )+ (j+1)];
+			newimage1[( (i+2)*width )+ (j+1)] =(newimage1[( (i+2)*width )+ (j+1)]<0)?0:newimage1[( (i+2)*width )+ (j+1)];
+
+			//12
+			newimage1[( (i+2)*width )+ (j+2)] = newimage1[( (i+2)*width )+ (j+2)] + (unsigned char)(round)(e*1/42.0);
+			newimage1[( (i+2)*width )+ (j+2)] = (newimage1[( (i+2)*width )+ (j+2)]>255)?255:newimage1[( (i+2)*width )+ (j+2)];
+			newimage1[( (i+2)*width )+ (j+2)] = (newimage1[( (i+2)*width )+ (j+2)]<0)?0:newimage1[( (i+2)*width )+ (j+2)];
+			
+					
+
+					
+		}
+	}	
+	return newimage1;
+
+}
+##########################################################################################################################################
+Program 5: Color halftoning: Seperable diffusion
+
+#include <stdio.h>
+#include <iostream>
+#include <stdlib.h>
+#include<math.h>
+
+
+
+using namespace std;
+unsigned char *floyd_stienberg(unsigned char *Image_data1, int height, int width, int bytesPerPixel);
+unsigned char *JJN(unsigned char *Image_data2, int height, int width, int bytesPerPixel);
+unsigned char *stucki(unsigned char *Image_data3, int height, int width, int bytesPerPixel);
+
+int main(int argc, char *argv[])
+{
+	// Define file pointer and variables
+	FILE *file;
+	int BytesPerPixel=3,N=2,width = 700 , height = 700,option=0,op=1;
+	
+	unsigned char *Imagedata= new unsigned char [width*height*BytesPerPixel];
+	unsigned char *newimage= new unsigned char [width*height*BytesPerPixel];
+	unsigned char *newimage_new= new unsigned char [width*height*BytesPerPixel];
+
+
+	if (!(file=fopen(argv[1],"rb"))) {
+		cout << "Cannot open file: " << argv[1] <<endl;
+		exit(1);
+	}
+	fread(newimage, sizeof(unsigned char), width*height*BytesPerPixel, file);
+	fclose(file);
+
+	cout<<"C error diffusion:\n";
+	/*
+	for(int i=0; i<height;i++)
+	{
+		for(int j=0;j<width;j++)
+		{
+			newimage[(i*width*3)+(j*3)+0]=255-Imagedata[(i*width*3)+(j*3)+0];
+			newimage[(i*width*3)+(j*3)+1]=255-Imagedata[(i*width*3)+(j*3)+1];
+			newimage[(i*width*3)+(j*3)+2]=255-Imagedata[(i*width*3)+(j*3)+2];
+		}
+	}*/
+	
+	
+	//newimage_FS=floyd_stienberg(Imagedata,height,width,BytesPerPixel);
+	float o=0,e=0;
+	for(int rgb=0;rgb<3;rgb++)
+	{
+	
+		for(int i=0; i<height; i++)
+		{
+			if(i%2==0)
+			{
+				
+				for(int j=0; j<width; j++)
+				{
+					//for(int rgb=0;rgb<3;rgb++)
+					//{
+						o=newimage[( (i)*width*3 )+ (j*3) + rgb ];
+						if(o < 255-o)
+						{
+							newimage_new[ ( (i)*width*3 )+ (j*3) + rgb ]=0;
+							e=o;
+						}
+						else 
+						{
+							newimage_new[ ( (i)*width*3 )+ (j*3) + rgb ]=255;
+							e=o-255;
+						}
+						//
+						if(j+1<width)
+						{
+							newimage[( (i)*width*3 )+ ((j+1)*3) + rgb] += (unsigned char)(round((e*7/16.0)));
+							//newimage[( (i)*width*3 )+ ((j+1)*3) + rgb] = (newimage[( (i)*width*3 )+ ((j+1)*3) + rgb]>255)?255:newimage[( (i)*width*3 )+ ((j+1)*3) + rgb];
+							//newimage[( (i)*width*3 )+ ((j+1)*3) + rgb] = (newimage[( (i)*width*3 )+ ((j+1)*3) + rgb]<0)?0:newimage[( (i)*width*3 )+ ((j+1)*3) + rgb];
+						}
+						if(i+1<height && j > 0)
+						{
+						 	newimage[( (i+1)*width*3 )+ ((j-1)*3) + rgb] += (unsigned char)(round((e*3/16.0)));
+						 //	newimage[( (i+1)*width*3 )+ ((j-1)*3) + rgb]=(newimage[( (i+1)*width*3 )+ ((j-1)*3) + rgb]>255)?255:newimage[( (i+1)*width*3 )+ ((j-1)*3) + rgb];
+						 //	newimage[( (i+1)*width*3 )+ ((j-1)*3) + rgb]=(newimage[( (i+1)*width*3 )+ ((j-1)*3) + rgb]<0)?0:newimage[( (i+1)*width*3 )+ ((j-1)*3) + rgb];
+
+						}
+						if(i+1<height)
+						{
+							newimage[( (i+1)*width*3 )+ (j*3) + rgb] += (unsigned char)(round((e*5/16.0)));
+						 	//newimage[( (i+1)*width*3 )+ (j*3) + rgb] = (newimage[( (i+1)*width*3 )+ (j*3) + rgb]>255)?255:newimage[( (i+1)*width*3 )+ (j*3) + rgb];
+						 	//newimage[( (i+1)*width*3 )+ (j*3) + rgb] = (newimage[( (i+1)*width*3 )+ (j*3) + rgb]<0)?0:newimage[( (i+1)*width*3 )+ (j*3) + rgb];
+						}
+						if(i+1<height && j+1<width)
+						{
+							//cout<<"#"<<i<<":"<<j<<"\t i+1 : j+1"<<endl;
+							newimage[( (i+1)*width *3)+ ((j+1)*3)+rgb] += (unsigned char)(round((e*1/16.0)));
+							//newimage[( (i+1)*width *3)+ ((j+1)*3)+rgb] = (newimage[( (i+1)*width *3)+ ((j+1)*3)+rgb]>255)?255:newimage[( (i+1)*width *3)+ ((j+1)*3)+rgb];
+							//newimage[( (i+1)*width *3)+ ((j+1)*3)+rgb] = (newimage[( (i+1)*width *3)+ ((j+1)*3)+rgb]<0)?0:newimage[( (i+1)*width *3)+ ((j+1)*3)+rgb];
+						}
+						
+					//}
+					
+				}
+			}
+			else
+			{
+				
+				for(int j=width-1; j>=0; j--)
+				{
+					
+					//for(int rgb=0;rgb<3;rgb++)
+					//{
+						//cout<<"#"<<i<<":"<<j<<"\tleft\n";
+					//cout<<'\t'<<j<<endl;
+				
+					o=newimage_new[( (i)*width*3 )+ (j*3) + rgb ];
+					//cout<<"#"<<i<<":"<<j<<"o :"<<(int)o<<'\t';//<<endl;
+					
+					if(o < 255-o)
+					{
+						//cout<<"\t ohooooo";
+						newimage[( (i)*width*3 )+ (j*3) + rgb ]=0;
+						e=o;
+					}
+					
+					else 
+					{
+						//cout<<"\t ohhhhhh\t";
+						newimage_new[( (i)*width*3 )+ (j*3) + rgb ]=255;
+						e=o-255;
+					}
+					
+					//cout<<"o  new:"<<e<<endl;
+					
+					//e=Imagedata[( (i)*width )+ (j)]-newimage_Fixed[( (i)*width )+ (j)];
+					if(j>0)
+					{
+						//cout<<"#"<<i<<":"<<j<<"\t i : j+1"<<endl;
+						newimage[( (i)*width*3 )+ ((j-1)*3) + rgb] +=(unsigned char)(round((e*7/16.0)));
+						//newimage[( (i)*width*3 )+ ((j-1)*3) + rgb]=(newimage[( (i)*width*3 )+ ((j-1)*3) + rgb]>255)?255:newimage[( (i)*width*3 )+ ((j-1)*3) + rgb];
+						//newimage[( (i)*width*3 )+ ((j-1)*3) + rgb]=(newimage[( (i)*width*3 )+ ((j-1)*3) + rgb]<0)?0:newimage[( (i)*width*3 )+ ((j-1)*3) + rgb];
+					}
+					if(i+1<height && j > 0)
+					{
+						//cout<<"#"<<i<<":"<<j<<"\t i+1 : j-1"<<endl;
+						//cout<<"#"<<i<<":"<<j<<"\t i+1 : j"<<endl;
+					 	newimage[( (i+1)*width*3 )+ ((j-1)*3) + rgb] += (unsigned char)(round((e*1/16.0)));
+					 //	newimage[( (i+1)*width*3 )+ ((j-1)*3) + rgb] = (newimage[( (i+1)*width*3 )+ ((j-1)*3) + rgb]>255)?255:newimage[( (i+1)*width*3 )+ ((j-1)*3) + rgb];
+					 	//newimage[( (i+1)*width*3 )+ ((j-1)*3) + rgb] = (newimage[( (i+1)*width*3 )+ ((j-1)*3) + rgb]<0)?0:newimage[( (i+1)*width*3 )+ ((j-1)*3) + rgb];
+
+					}
+					if(i+1<height)
+					{
+						newimage[( (i+1)*width*3 )+ (j*3) + rgb] += (unsigned char)(round((e*5/16.0)));
+					 	//newimage[( (i+1)*width*3 )+ (j*3) + rgb] = (newimage[( (i+1)*width*3 )+ (j*3) + rgb]>255)?255:newimage[( (i+1)*width*3 )+ (j*3) + rgb];
+					 	//newimage[( (i+1)*width*3 )+ (j*3) + rgb] = (newimage[( (i+1)*width*3 )+ (j*3) + rgb]<0)?0:newimage[( (i+1)*width*3 )+ (j*3) + rgb];
+					}
+					if(i+1<height && j+1<width)
+					{
+						//cout<<"#"<<i<<":"<<j<<"\t i+1 : j+1"<<endl;
+						newimage[( (i+1)*width*3 )+ ((j+1)*3) +rgb] +=(unsigned char)(round((e*3/16.0)));
+						//newimage[( (i+1)*width*3 )+ ((j+1)*3) +rgb] = (newimage[( (i+1)*width*3 )+ ((j+1)*3) +rgb]>255)?255:newimage[( (i+1)*width*3 )+ ((j+1)*3) +rgb];
+						//newimage[( (i+1)*width*3 )+ ((j+1)*3) +rgb] = (newimage[( (i+1)*width*3 )+ ((j+1)*3) +rgb]<0)?0:newimage[( (i+1)*width*3 )+ ((j+1)*3) +rgb];
+					}
+
+				}
+			}
+		}	
+	}
+	
+	//cout<<"C error diffusion:\n";
+	/*
+	for(int i=0; i<height;i++)
+	{
+		for(int j=0;j<width;j++)
+		{
+			newimage_ST[(i*width*3)+(j*3)+0]=255-newimage[(i*width*3)+(j*3)+0];
+			newimage_ST[(i*width*3)+(j*3)+1]=255-newimage[(i*width*3)+(j*3)+1];
+			newimage_ST[(i*width*3)+(j*3)+2]=255-newimage[(i*width*3)+(j*3)+2];
+		}
+	}*/
+	
+	if (!(file=fopen(argv[2],"wb"))) {
+	cout << "Cannot open file: " << argv[2] << endl;
+	exit(1);
+	}
+	fwrite(newimage_new, sizeof(unsigned char), width*height*BytesPerPixel, file);
+	fclose(file);
+	
+
+	return 0;
+}
+//end of main
+
+
+###########################################################################################################################################
+Program 6: q2cb_MBVQ
+
+#include <stdio.h>
+#include <iostream>
+#include <stdlib.h>
+#include<math.h>
+
+
+
+using namespace std;
+
+int MBVQ_Type(unsigned char * newimage_FS,int i,int j,int width, int BytesPerPixel);
+int closest_vertex(unsigned char * newimage_FS,int i,int j,int width, int BytesPerPixel, unsigned char mbvq[4][3]);
+unsigned char minimum(unsigned char r,unsigned char g, unsigned char b);
+
+int main(int argc, char *argv[])
+{
+	// Define file pointer and variables
+	FILE *file;
+	int BytesPerPixel=3,N=2,width = 700 , height = 700,option=0,op=1;
+	
+	unsigned char *newimage= new unsigned char [width*height*BytesPerPixel];
+	unsigned char *newimage_FS= new unsigned char [width*height*BytesPerPixel];
+	unsigned char *tempimageRGB_CMY= new unsigned char [width*height*BytesPerPixel];
+	unsigned char *tempimage= new unsigned char [width*height*BytesPerPixel];
+	
+	if (!(file=fopen(argv[1],"rb"))) {
+		cout << "Cannot open file: " << argv[1] <<endl;
+		exit(1);
+	}
+	fread(newimage_FS, sizeof(unsigned char), width*height*BytesPerPixel, file);
+	fclose(file);
+/*
+	unsigned char CMYW[4][3]={{0,255,0},{255,0,0},{0,0,255},{0,0,0}},  //1
+				  MYGC[4][3]={{255,0,0},{0,0,255},{0,255,255},{0,255,0}},  //2
+				  RGMY[4][3]={{255,0,255},{0,255,255},{255,0,0},{0,0,255}},  //3
+				  KRGB[4][3]={{255,255,255},{255,0,255},{0,255,255},{255,255,0}},  //4
+				  RGBM[4][3]={{255,0,255},{0,255,255},{255,255,0},{255,0,0}},  //5
+				  CMGB[4][3]={{0,255,0},{255,0,0},{0,255,255},{255,255,0}};  //6 */
+
+	unsigned char CMYW[4][3]={{255,0,255},{0,255,255},{255,255,0},{255,255,255}},  //1
+				  MYGC[4][3]={{0,255,255},{255,255,0},{255,0,0},{255,0,255}},  //2
+				  RGMY[4][3]={{0,255,0},{255,0,0},{0,255,255},{255,255,0}},  //3
+				  KRGB[4][3]={{0,0,0},{0,255,0},{255,0,0},{0,0,255}},  //4
+				  RGBM[4][3]={{0,255,0},{255,0,0},{0,0,255},{0,255,255}},  //5
+				  CMGB[4][3]={{255,0,255},{0,255,255},{255,0,0},{0,0,255}};  //6
+	unsigned char k=0;
+	/*
+	for(int i=0; i<height;i++)
+	{
+		for(int j=0;j<width;j++)
+		{
+			//k=minimum(newimage_FS[(i*width*3)+(j*3)+0],newimage_FS[(i*width*3)+(j*3)+1],newimage_FS[(i*width*3)+(j*3)+2]);
+
+			tempimageRGB_CMY[(i*width*3)+(j*3)+0]=255-newimage_FS[(i*width*3)+(j*3)+0];
+			tempimageRGB_CMY[(i*width*3)+(j*3)+1]=255-newimage_FS[(i*width*3)+(j*3)+1];
+			tempimageRGB_CMY[(i*width*3)+(j*3)+2]=255-newimage_FS[(i*width*3)+(j*3)+2];
+		}
+	}
+*/
+	float o=0,e=0;
+	for(int i=0; i<height;i++)
+	{
+		//if(i%2==0)
+		//{
+			for(int j=0;j<width;j++)
+			{
+				int type=0, vertex_pointer=0;
+				type = MBVQ_Type(newimage_FS,i,j,width,BytesPerPixel);
+				unsigned char cmy[3]={0},e[3]={0};
+				//cout<<"MBVQ:"<<type<<endl;
+				switch(type)
+				{
+					case 1: //CMYW
+					{
+						vertex_pointer=closest_vertex(newimage_FS,i,j,width,BytesPerPixel,CMYW);
+						cmy[0]=CMYW[vertex_pointer][0];
+						cmy[1]=CMYW[vertex_pointer][1];
+						cmy[2]=CMYW[vertex_pointer][2];
+						break;
+					}
+					case 2: //MYGC
+					{
+						vertex_pointer=closest_vertex(newimage_FS,i,j,width,BytesPerPixel,MYGC);
+						cmy[0]=MYGC[vertex_pointer][0];
+						cmy[1]=MYGC[vertex_pointer][1];
+						cmy[2]=MYGC[vertex_pointer][2];
+						break;
+					}
+					case 3: //RGMY
+					{	
+						vertex_pointer=closest_vertex(newimage_FS,i,j,width,BytesPerPixel,RGMY);
+						cmy[0]=RGMY[vertex_pointer][0];
+						cmy[1]=RGMY[vertex_pointer][1];
+						cmy[2]=RGMY[vertex_pointer][2];
+							break;
+					}
+					case 4: //KRGB
+					{
+							vertex_pointer=closest_vertex(newimage_FS,i,j,width,BytesPerPixel,KRGB);
+						break;
+						cmy[0]=KRGB[vertex_pointer][0];
+						cmy[1]=KRGB[vertex_pointer][1];
+						cmy[2]=KRGB[vertex_pointer][2];
+					}
+					case 5:  //RGBM
+					{
+						vertex_pointer=closest_vertex(newimage_FS,i,j,width,BytesPerPixel,RGBM);
+						cmy[0]=RGBM[vertex_pointer][0];
+						cmy[1]=RGBM[vertex_pointer][1];
+						cmy[2]=RGBM[vertex_pointer][2];
+						break;
+					}
+					case 6:  //CMGB
+					{
+						vertex_pointer=closest_vertex(newimage_FS,i,j,width,BytesPerPixel,CMGB);
+						cmy[0]=CMGB[vertex_pointer][0];
+						cmy[1]=CMGB[vertex_pointer][1];
+						cmy[2]=CMGB[vertex_pointer][2];
+						break;
+					}
+					default:
+					{
+						cout<<"\n\n\t\tOOps sorry\n\n";
+					}
+				}
+				
+				e[0]=newimage_FS[(i*width*BytesPerPixel)+(j*BytesPerPixel)+0]-cmy[0];
+				e[1]=newimage_FS[(i*width*BytesPerPixel)+(j*BytesPerPixel)+1]-cmy[1];
+				e[2]=newimage_FS[(i*width*BytesPerPixel)+(j*BytesPerPixel)+2]-cmy[2];
+
+				tempimage[((( (i)*width )+ (j))*3)+0]=cmy[0];
+				tempimage[((( (i)*width )+ (j))*3)+1]=cmy[1];
+				tempimage[((( (i)*width )+ (j))*3)+2]=cmy[2];
+
+				for(int rgb=0;rgb<3;rgb++)
+				{
+				
+				newimage_FS[((( (i)*width )+ (j+1))*3)+rgb] = newimage_FS[((( (i)*width )+ (j+1))*3)+rgb] + (unsigned char)(round)(e[rgb]*7/48.0);
+			
+				//2
+				newimage_FS[((( (i)*width )+ (j+2))*3)+rgb] = newimage_FS[((( (i)*width )+ (j+2))*3)+rgb] + (unsigned char)(round)(e[rgb]*5/48.0);
+		
+
+				//3
+				newimage_FS[((( (i+1)*width )+ (j-2))*3)+rgb] = newimage_FS[((( (i+1)*width )+ (j-2))*3)+rgb] + (unsigned char)(round)(e[rgb]*3/48.0);
+		
+				//4
+				newimage_FS[((( (i+1)*width )+ (j-1))*3)+rgb] = newimage_FS[((( (i+1)*width )+ (j-1))*3)+rgb] + (unsigned char)(round)(e[rgb]*5/48.0);
+			
+				//5
+				newimage_FS[((( (i+1)*width )+ (j))*3)+rgb] = newimage_FS[((( (i+1)*width )+ (j))*3)+rgb] + (unsigned char)(round)(e[rgb]*7/48.0);
+			
+				//6
+				newimage_FS[((( (i+1)*width )+ (j+1))*3)+rgb] = newimage_FS[((( (i+1)*width )+ (j+1))*3)+rgb] + (unsigned char)(round)(e[rgb]*5/48.0);
+			
+				//7
+				newimage_FS[((( (i+1)*width )+ (j+2))*3)+rgb] = newimage_FS[((( (i+1)*width )+ (j+2))*3)+rgb] + (unsigned char)(round)(e[rgb]*3/48.0);
+			
+				//8
+				newimage_FS[((( (i+2)*width )+ (j-2))*3)+rgb] = newimage_FS[((( (i+2)*width )+ (j-2))*3)+rgb] + (unsigned char)(round)(e[rgb]*1/48.0);
+		
+
+				//9
+				newimage_FS[((( (i+2)*width )+ (j-1))*3)+rgb] = newimage_FS[((( (i+2)*width )+ (j-1))*3)+rgb] + (unsigned char)(round)(e[rgb]*3/48.0);
+			
+				//10
+				newimage_FS[((( (i+2)*width )+ (j))*3)+rgb] = newimage_FS[((( (i+2)*width )+ (j))*3)+rgb] + (unsigned char)(round)(e[rgb]*5/48.0);
+		
+				//11
+				newimage_FS[((( (i+2)*width )+ (j+1))*3)+rgb] = newimage_FS[((( (i+2)*width )+ (j+1))*3)+rgb] + (unsigned char)(round)(e[rgb]*3/48.0);
+			
+				//12
+				newimage_FS[((( (i+2)*width )+ (j+2))*3)+rgb] = newimage_FS[((( (i+2)*width )+ (j+2))*3)+rgb] + (unsigned char)(round)(e[rgb]*1/48.0);
+			
+
+				}
+		}
+	}
+	/*
+	for(int i=0; i<height;i++)
+	{
+		for(int j=0;j<width;j++)
+		{
+			tempimageCMY_RGB[(i*width*3)+(j*3)+0]=255-tempimageRGB_CMY[(i*width*3)+(j*3)+0];
+			tempimageCMY_RGB[(i*width*3)+(j*3)+1]=255-tempimageRGB_CMY[(i*width*3)+(j*3)+1];
+			tempimageCMY_RGB[(i*width*3)+(j*3)+2]=255-tempimageRGB_CMY[(i*width*3)+(j*3)+2];
+		}
+	}*/
+	if (!(file=fopen(argv[2],"wb"))) {
+	cout << "Cannot open file: " << argv[2] << endl;
+	exit(1);
+	}
+	fwrite(tempimage, sizeof(unsigned char), width*height*BytesPerPixel, file);
+	fclose(file);
+
+	return 0;
+}
+
+//find the closest vertex to the given pixel;
+int closest_vertex(unsigned char * newimage_FS,int i,int j,int width, int BytesPerPixel, unsigned char mbvq[4][3])
+{
+	float distance[4]={0}, l_2[4]={0};
+	int min=1000,min_v=0;
+	for(int i=0;i<4;i++)
+	{
+		distance[i]= ( pow((mbvq[i][0]-newimage_FS[(i*width*BytesPerPixel)+(j*BytesPerPixel)+0]),2)+
+					 pow((mbvq[i][1]-newimage_FS[(i*width*BytesPerPixel)+(j*BytesPerPixel)+1]),2)+
+					 pow((mbvq[i][2]-newimage_FS[(i*width*BytesPerPixel)+(j*BytesPerPixel)+2]),2) );
+		l_2[i] = sqrt(distance[i]);
+		if(min>l_2[i])
+		{
+			min=l_2[i];
+			min_v=i;
+		}
+	}
+	return min_v;
+}
+
+unsigned char minimum(unsigned char r,unsigned char g, unsigned char b)
+{ 
+	unsigned char ret;
+	if((r<g) && (r<b) )
+		ret= r;
+	if((g<r)&&(g<b))
+		ret= g;
+	if((b<r)&&(b<g))
+		ret= b;
+	return ret;
+}
+
+//MBVQ type:
+int MBVQ_Type(unsigned char * newimage_FS,int i,int j,int width, int BytesPerPixel)
+{
+	int r=newimage_FS[(i*width*BytesPerPixel)+(j*BytesPerPixel)+0];
+	int	g=newimage_FS[(i*width*BytesPerPixel)+(j*BytesPerPixel)+1];
+	int	b=newimage_FS[(i*width*BytesPerPixel)+(j*BytesPerPixel)+2];
+	if((r+g)>255)
+	{
+		if((g+b)>255)
+		{
+			if((r+g+b)>510)
+				return 1;
+			else
+				return 2;
+		}
+		else
+			return 3;
+	}
+	else
+	{
+		if(!((g+b)>255))
+		{
+			if(!((r+g+b)>255))
+				return 4;
+			else
+				return 5;
+		}
+		else
+		{
+			return 6;
+		}
+	}
+}
+
+###########################################################################################
+Program 7: shrinking.cpp
+
+#include <stdio.h>
+#include <iostream>
+#include <stdlib.h>
+#include<math.h>
+#include<random>
+using namespace std;
+//FUNCTIONS USED
+
+unsigned char *shrink_main(unsigned char * Image, int height, int wid, int BytesPerPixel);
+unsigned char *pattern_gen_and_return_hit1(unsigned char *Image_data, int height, int width, int BytesPerPixel);
+unsigned char *pattern_gen_and_return_hit2(unsigned char *Image_data,unsigned char *Image, int height, int width, int BytesPerPixel);
+unsigned char shrink_cond(unsigned char *a, int size);
+unsigned char unc_shrink_thin(unsigned char *a, int size);
+
+unsigned char *fixed_Dithering(unsigned char *Image_data, int height, int width, int bytesPerPixel);
+unsigned char *convert1_255(unsigned char *a);
+unsigned char *copy(unsigned char *Image_data, int height, int width, int bytesPerPixel);
+int counter(unsigned char *Image_data, int height, int width, int bytesPerPixel);
+
+//Main Func
+int main(int argc, char *argv[])
+{
+	// Define file pointer and variables
+	FILE *file;
+	int BytesPerPixel=1;
+	int width = 640 , height = 480;
+
+	unsigned char *Imagedata= new unsigned char [width*height*BytesPerPixel];
+	unsigned char *newimage_Fixed= new unsigned char [width*height*BytesPerPixel];
+	unsigned char *newimage_temp= new unsigned char [width*height*BytesPerPixel];
+	int len=0;
+	int *star= new int (len);
+	int *star_hist= new int (len);
+	
+	//read input
+	if (!(file=fopen(argv[1],"rb"))) {
+		cout << "Cannot open file: " << argv[1] <<endl;
+		exit(1);
+	}
+	fread(Imagedata, sizeof(unsigned char), width*height*BytesPerPixel, file);
+	fclose(file);
+
+	
+	newimage_Fixed=fixed_Dithering(Imagedata,height,width,BytesPerPixel); // 0 & 1
+	newimage_temp=fixed_Dithering(Imagedata,height,width,BytesPerPixel);
+	//newimage_temp=convert1_255(newimage_temp);
+	
+	
+	for(int i=0;i<20;i++)
+	{
+		newimage_temp=shrink_main(newimage_Fixed,height,width,BytesPerPixel);
+		newimage_Fixed=copy(newimage_temp,height,width,BytesPerPixel);
+		star[len++]=counter(newimage_Fixed,height,width,BytesPerPixel);
+	}
+	cout<<"Showing number of stars for each size in the order of increasing size.....\n";
+	cout<<"at i="<<0<<" #stars is:"<<star[0]<<endl;
+	for(int i=1;i<len;i++)
+	{
+		cout<<"at i="<<i<<" #stars is:"<<star[i]-star[i-1]<<endl;
+	}
+	len=0;
+
+	
+	newimage_Fixed=convert1_255(newimage_temp);
+	//write output
+	if (!(file=fopen(argv[2],"wb"))) {
+		cout << "Cannot open file: " << argv[2] << endl;
+		exit(1);
+	}
+	fwrite(newimage_Fixed, sizeof(unsigned char), width*height*BytesPerPixel, file);
+	fclose(file);
+	/*if (!(file=fopen(argv[3],"wb"))) {
+		cout << "Cannot open file: " << argv[2] << endl;
+		exit(1);
+	}
+	fwrite(hit_uncc, sizeof(unsigned char), width*height*BytesPerPixel, file);
+	fclose(file);*/
+	
+	return 0;
+}
+int counter(unsigned char * newimage_Fixed,int height,int width, int BytesPerPixel)
+{
+	int c=0;
+	int a[8]={0};
+	for(int i=1;i<height-1;i++)
+	{
+		for(int j=1;j<width-1;j++)
+		{
+			if(newimage_Fixed[(i*width)+(j)]==0)
+			{}
+			else if(newimage_Fixed[(i*width)+(j)]==1)
+			{
+				a[0]=newimage_Fixed[(i*width)+(j+1)];
+				a[1]=newimage_Fixed[((i-1)*width)+(j+1)];
+				a[2]=newimage_Fixed[((i-1)*width)+(j)];
+				a[3]=newimage_Fixed[((i-1)*width)+(j-1)];
+				a[4]=newimage_Fixed[(i*width)+(j-1)];
+				a[5]=newimage_Fixed[((i+1)*width)+(j-1)];
+				a[6]=newimage_Fixed[((i+1)*width)+(j)];
+				a[7]=newimage_Fixed[((i+1)*width)+(j+1)];
+				if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0 )
+				{
+					c++;
+				}
+			}
+
+
+		}
+	}
+	return c;
+}
+unsigned char *shrink_main(unsigned char * actual_image, int height, int width, int BytesPerPixel)
+{
+	unsigned char *newimage_temp= new unsigned char [width*height*BytesPerPixel];
+	
+	unsigned char *hit_c= new unsigned char [width*height*BytesPerPixel]; //0&1
+	unsigned char *hit_unc= new unsigned char [width*height*BytesPerPixel];//0&1
+	
+
+	hit_c=pattern_gen_and_return_hit1(actual_image,height,width,BytesPerPixel);
+
+	
+	hit_unc=pattern_gen_and_return_hit2(hit_c,actual_image,height,width,BytesPerPixel);
+
+
+	return hit_unc;
+
+}
+
+
+//shrink_cond Conditional Pattern
+unsigned char *pattern_gen_and_return_hit1(unsigned char *newimage_Fixed, int height, int width,int BytesPerPixel)
+{
+	unsigned char *hit_c= new unsigned char [width*height*BytesPerPixel];
+	int x=0,mark=0;
+	unsigned char a[8]={0};
+	for( int i=1;i<height;i++)
+	{
+		for(int j=1;j<width;j++)
+		{
+			if(newimage_Fixed[(i*width)+(j)]==0)
+			{
+				//cout<<"yes";
+				hit_c[(i*width)+j]=0;
+				//cout<<"I:"<<i<<"\tJ:"<<j<<"\tMark:0"<<endl;
+				
+				
+			}
+			else if(newimage_Fixed[(i*width)+(j)]==1)
+			{
+			
+
+				a[0]=newimage_Fixed[(i*width)+(j+1)];
+				a[1]=newimage_Fixed[((i-1)*width)+(j+1)];
+				a[2]=newimage_Fixed[((i-1)*width)+(j)];
+				a[3]=newimage_Fixed[((i-1)*width)+(j-1)];
+				a[4]=newimage_Fixed[(i*width)+(j-1)];
+				a[5]=newimage_Fixed[((i+1)*width)+(j-1)];
+				a[6]=newimage_Fixed[((i+1)*width)+(j)];
+				a[7]=newimage_Fixed[((i+1)*width)+(j+1)];
+				//cout<<"Shrink"<<endl;
+				mark=shrink_cond(a,x);
+			
+				//cout<<"I:"<<i<<"\tJ:"<<j<<"\tMark:"<<mark<<endl;
+				hit_c[(i*width)+j]=mark;
+				//cout<<"Mark:"<<(int)hit_c[(i*width)+j]<<endl;
+				
+			}
+		}
+	}
+	return hit_c;
+}
+
+unsigned char *pattern_gen_and_return_hit2(unsigned char *newimage_Fixed,unsigned char *actual_image, int height, int width,int BytesPerPixel)
+{
+	//unsigned char *hit_c= new unsigned char [width*height*BytesPerPixel];
+	int x=0,mark=0;
+	unsigned char *rehit= new unsigned char [width*height*BytesPerPixel];
+	unsigned char a[8]={0};
+	for( int i=1;i<height;i++)
+	{
+		for(int j=1;j<width;j++)
+		{
+			if(newimage_Fixed[(i*width)+(j)]==0)
+			{
+				rehit[(i*width)+j]=actual_image[(i*width)+j];
+
+				//continue;
+			}
+			else if (newimage_Fixed[(i*width)+(j)]==1)
+			{
+				a[0]=newimage_Fixed[(i*width)+(j+1)];
+				a[1]=newimage_Fixed[((i-1)*width)+(j+1)];
+				a[2]=newimage_Fixed[((i-1)*width)+(j)];
+				a[3]=newimage_Fixed[((i-1)*width)+(j-1)];
+				a[4]=newimage_Fixed[(i*width)+(j-1)];
+				a[5]=newimage_Fixed[((i+1)*width)+(j-1)];
+				a[6]=newimage_Fixed[((i+1)*width)+(j)];
+				a[7]=newimage_Fixed[((i+1)*width)+(j+1)];
+			
+				//cout<<"reverse"<<endl;
+				mark=unc_shrink_thin(a,x);
+				if(mark==1)
+				{
+					rehit[(i*width)+j]=1;//actual_image[(i*width)+j];
+					//actual_image[(i*width)+j]=255;
+					//cout<<"he:\n";
+					//rehit[(i*width)+j]=1;
+					//actual_image[(i*width)+j]=1;
+					continue;
+				}
+				else
+				{
+					rehit[(i*width)+j]=0;//255*(actual_image[(i*width)+j]);//255*actual_image[(i*width)+j];
+					//cout<<"hele:\n";
+				}
+
+				
+				
+				//cout<<"Mark:"<<mark<<endl;
+				
+
+			}
+		}
+	}
+	return rehit;
+	//return actual_image;
+
+}
+
+//UNConditional Pattern
+unsigned char shrink_cond(unsigned char *a, int size)
+{
+	
+	int ret=0;
+	/*cout<<"\t The elements are:";//<<(int)pat<<endl;
+	
+	//cout<<"enter shrink:"<<endl;
+	
+	for(int g=0;g<8;g++)
+	{
+		cout<<"\t"<<(int)a[g];
+		//cout<<"h";
+	}
+	cout<<endl;*/
+	//s:bond 1
+	//1
+	if(a[0]==0 && a[1]==1 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==1 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==1 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//S; bond 2:
+	//1
+	else if(a[0]==1 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==0 && a[1]==0 && a[2]==1 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0)
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==1 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==1 && a[7]== 0)
+	{
+		ret=1;
+	}
+	//S: bond 3:
+	//1
+	else if(a[0]==1 && a[1]==1 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==0 && a[1]==1 && a[2]==1 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==0 && a[2]==1 && a[3]==1 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==1 && a[4]==1 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//5
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==1 && a[5]==1 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//6
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==1 && a[6]==1 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//7
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//8
+	else if(a[0]==1 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==1 )
+	{
+		ret=1;
+	}
+
+	//STK: Bond 4:
+	//1
+	else if(a[0]==1 && a[1]==1 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==0 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//ST 1: bond5:
+	//1
+	else if(a[0]==1 && a[1]==0 && a[2]==1 && a[3]==1 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==1 && a[1]==0 && a[2]==1 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==1 && a[2]==1 && a[3]==0 && a[4]==1 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==1 && a[1]==1 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==1 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//ST 2: Bond 5
+	//1
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==0 && a[1]==0 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==1 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//ST : Bond 6
+	//1
+	else if(a[0]==1 && a[1]==0 && a[2]==1 && a[3]==1 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==0 && a[1]==1 && a[2]==1 && a[3]==0 && a[4]==1 && a[5]==1 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//STK: Bond 6
+	//1
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==0 && a[1]==0 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==0 && a[7]==0)
+	{
+		ret=1;
+	}
+	//5
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//6
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//7
+	else if(a[0]==1 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//8
+	else if(a[0]==1 && a[1]==1 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//STK : bond 7
+	//1
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==0 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==1 && a[1]==1 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//STK: bond 8
+	//1
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==0 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==1 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//STK: bond 9
+	//1
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==0 && a[5]==0 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==0 && a[4]==0 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==0 && a[6]==0 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//5
+	else if(a[0]==0 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//6
+	else if(a[0]==0 && a[1]==0 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//7
+	else if(a[0]==1 && a[1]==0 && a[2]==0 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//8
+	else if(a[0]==1 && a[1]==1 && a[2]==0 && a[3]==0 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//STK: Bond 10:
+	//1
+	else if(a[0]==0 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==1 && a[1]==1 && a[2]==0 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==0 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==0 && a[7]==1 )
+	{
+		ret=1;
+	}
+	else
+	{
+		ret=0;
+	}
+
+
+	
+	return ret;
+}
+
+
+
+
+
+
+
+
+unsigned char unc_shrink_thin(unsigned char *a, int size)
+{
+	int ret=0;
+	//spur
+	//1
+	if(a[0]==0 && a[1]==1 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0)
+	{
+		ret=1;
+	} 
+	//2
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==1 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0)
+	{
+		ret=1;
+	}
+	//single 4 connection:
+	//1
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==1 && a[7]==0)
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==1 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0)
+	{
+		ret=1;
+	}
+	// L cluster:
+	//1
+	else if(a[0]==1&& a[1]==1 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0)
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==0 && a[1]==1 && a[2]==1 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0)
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==0 && a[2]==1 && a[3]==1 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0)
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==1 && a[4]==1 && a[5]==0 && a[6]==0 && a[7]==0)
+	{
+		ret=1;
+	}
+	//5
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==1 && a[5]==1 && a[6]==0 && a[7]==0)
+	{
+		ret=1;
+	}
+	//6
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==1 && a[6]==1 && a[7]==0)
+	{
+		ret=1;
+	}
+	//7
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==1 && a[7]==1)
+	{
+		ret=1;
+	}
+	//8
+	else if(a[0]==1 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==1)
+	{
+		ret=1;
+	}
+	//4-connected offset
+	//1
+	else if(a[0]==0 && a[1]==1 && a[2]==1 && a[3]==0 && a[4]==1 && a[5]==0 && a[6]==0 && a[7]==0)
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==1 && a[1]==0 && a[2]==1 && a[3]==1 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0)
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==1 && a[1]==0 && a[2]==1 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==1)
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==1 && a[1]==1 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==1 && a[7]==0)
+	{
+		ret=1;
+	}
+	//Spur corner cluster
+	//1
+	else if((a[0]==1 || a[2]==1)==1 && a[1]==1  && a[3]==1 && a[4]==0 && a[5]==1 && a[6]==0 && a[7]==0)
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==0 && a[1]==0 && (a[2]==1 || a[4]==1)==1 && a[3]==0  && a[5]==0 && a[6]==0 && a[7]==1)
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==1 && a[2]==0 && a[3]==0 && (a[4]==1 || a[6]==1)==1 && a[5]==1 && a[7]==0)
+	{
+		ret=1;
+	}
+	//4
+	else if((a[0]==1 || a[6]==1)==1 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==1 && a[5]==0 && a[7]==1)
+	{
+		ret=1;
+	}
+	//corner cluster
+	else if(a[2]==1 && a[3]==1 && a[4]==1)
+	{
+		ret=1;
+	}
+		//Tee Branch
+		//1
+		else if((a[0]==1) && (a[1]==0 ) && a[2]==1 && a[4]==1 && (a[6]==0 ) && (a[7]==0 ))
+		{
+			ret=1;
+		}
+		//2
+		else if((a[0]==1) && a[2]==1 && a[3]==0 && a[4]==1 && (a[5]==0 )&& (a[6]==0 ))
+		{
+			ret=1;
+		}
+		//3
+		else if((a[0]==1) && a[2]==0 && a[3]==0 && a[4]==1 && (a[5]==0 )&& (a[6]==1 ))
+		{
+			ret=1;
+		}
+		//4
+		else if((a[0]==1) && (a[1]==0 ) && a[2]==0 &&  a[4]==1 && (a[6]==1 ) && (a[7]==0 ))
+		{
+			ret=1;
+		}
+		//5
+		else if((a[0]==0) && a[2]==1 && a[4]==1 && (a[5]==0 )&& (a[6]==1 ) && (a[7]==0 ))
+		{
+			ret=1;
+		}
+		//6
+		else if((a[0]==0) && (a[1]==0 ) && a[2]==1 && a[3]==0 && a[4]==1 && (a[6]==1 ))
+		{
+			ret=1;
+		}
+		//7
+		else if((a[0]==1) && (a[1]==0 ) && a[2]==1 && a[3]==0 && a[4]==0 && (a[6]==1 ))
+		{
+			ret=1;
+		}
+		//8
+		else if((a[0]==1) && a[2]==1 && a[4]==0 && (a[5]==0 )&& (a[6]==1 ) && (a[7]==0 ))
+		{
+			ret=1;
+		}
+		//Vee branch
+		//1
+		else if( (a[1]==1 ) &&  a[3]==1 && (a[5]==1 || a[6]==1 || a[7]==1 )==1)
+		{
+			ret=1;
+		}
+		//2
+		else if(a[3]==1 && a[5]==1 && (a[0]==1 || a[1]==1 || a[7]==1)==1)
+		{
+			ret=1;
+		}
+		//3
+		else if((a[1]==1 || a[2]==1 || a[3]==1)==1 && a[5]==1 && a[7]==1)
+		{
+			ret=1;
+		}
+		//4
+		else if((a[0]==1) && (a[7]==1 ) && (a[3]==1||a[4]==1||a[5]==1)==1)
+		{
+			ret=1;
+		}
+		//Diagnol Branch
+		//1
+		else if(a[0]==1 && a[2]==1 && a[5]==1 && a[1]==0 && a[4]==0 && a[6]==0)
+		{
+			ret=1;
+		}
+		//2
+		else if(a[0]==0 && a[3]==0 && a[6]==0 && a[2]==1 && a[4]==1 && a[7]==1)
+		{
+			ret=1;
+		}
+		//3
+		else if(a[1]==1 && a[4]==1 && a[6]==1 && a[0]==0 && a[2]==0 && a[5]==0)
+		{
+			ret=1;
+		}
+		//4
+		else if(a[0]==1 && a[3]==1 && a[6]==1 && a[2]==0 && a[4]==0 && a[7]==0)
+		{
+			ret=1;
+		}
+		else
+		{
+
+			ret=0;
+		}
+		
+	
+
+	
+
+	
+	return ret;
+
+}
+
+
+
+unsigned char *fixed_Dithering(unsigned char *Image_data, int height, int width, int bytesPerPixel)
+{
+	unsigned char *new_image = new unsigned char [width*height*bytesPerPixel];
+	int threshold_fixed=140;
+	for(int i=0 ; i<height ; i++)
+	{
+		for(int j=0; j<width ; j++)
+		{
+			if(Image_data[(i*width)+j]<threshold_fixed)
+			{
+				new_image[(i*width)+j]=0;
+			}
+			else if(Image_data[(i*width)+j]>=threshold_fixed)
+			{
+				new_image[(i*width)+j]=1;
+			}
+		}
+	}
+
+	return new_image;
+}
+unsigned char *copy(unsigned char *Image_data, int height, int width, int bytesPerPixel)
+{
+	//cout<<"Copy:\n";
+	unsigned char *new_image = new unsigned char [width*height*bytesPerPixel];
+	int threshold_fixed=1;
+	for(int i=0 ; i<height ; i++)
+	{
+		for(int j=0; j<width ; j++)
+		{
+			if(Image_data[(i*width)+j]==threshold_fixed)
+			{
+				new_image[(i*width)+j]=1;
+			}
+			else 
+			{
+				new_image[(i*width)+j]=0;
+			}
+		}
+	}
+
+	return new_image;
+	//return a;
+}
+unsigned char *convert1_255(unsigned char *a)
+{
+	//cout<<"Covert 1 -> 255:\n";
+	for(int i=0;i<480;i++)
+	{
+		for(int j=0;j<640;j++)
+		{
+			if(a[(i*640)+j]==0)
+				continue;
+			else
+			{
+				a[(i*640)+j]=255;
+				//printf("%u\n",a[(i*640)+j]);
+			}
+		}
+	}
+	return a;
+}
+
+######################################################################################
+Program 8: Thinning:
+
+
+#include <stdio.h>
+#include <iostream>
+#include <stdlib.h>
+#include<math.h>
+#include<random>
+using namespace std;
+//FUNCTIONS USED
+
+unsigned char *thin_main(unsigned char * Image, int height, int wid, int BytesPerPixel);
+unsigned char *pattern_gen_and_return_hit1(unsigned char *Image_data, int height, int width, int BytesPerPixel);
+unsigned char *pattern_gen_and_return_hit2(unsigned char *Image_data,unsigned char *Image, int height, int width, int BytesPerPixel);
+unsigned char thin_cond(unsigned char *a, int size);
+unsigned char unc_shrink_thin(unsigned char *a, int size);
+
+unsigned char *fixed_Dithering(unsigned char *Image_data, int height, int width, int bytesPerPixel);
+unsigned char *convert1_255(unsigned char *a);
+unsigned char *invert(unsigned char *a);
+unsigned char *copy(unsigned char *Image_data, int height, int width, int bytesPerPixel);
+
+//Main Func
+int main(int argc, char *argv[])
+{
+	// Define file pointer and variables
+	FILE *file;
+	int BytesPerPixel=1;
+	int width = 100 , height = 100;
+
+	unsigned char *Imagedata= new unsigned char [width*height*BytesPerPixel];
+	unsigned char *newimage_Fixed= new unsigned char [width*height*BytesPerPixel];
+	unsigned char *newimage_temp= new unsigned char [width*height*BytesPerPixel];
+	
+	//read input
+	if (!(file=fopen(argv[1],"rb"))) {
+		cout << "Cannot open file: " << argv[1] <<endl;
+		exit(1);
+	}
+	fread(Imagedata, sizeof(unsigned char), width*height*BytesPerPixel, file);
+	fclose(file);
+
+	
+	newimage_Fixed=fixed_Dithering(Imagedata,height,width,BytesPerPixel); // 1 & 0 instead of 0 & 1
+	newimage_temp=fixed_Dithering(Imagedata,height,width,BytesPerPixel);
+	//newimage_temp=convert1_255(newimage_temp);
+	
+	
+	for(int i=0;i<1;i++)
+	{
+		newimage_temp=thin_main(newimage_Fixed,height,width,BytesPerPixel);
+		newimage_Fixed=copy(newimage_temp,height,width,BytesPerPixel);
+	}
+	
+
+	
+	newimage_Fixed=convert1_255(newimage_temp);
+	newimage_Fixed=invert(newimage_Fixed);
+	
+	//write output
+	if (!(file=fopen(argv[2],"wb"))) {
+		cout << "Cannot open file: " << argv[2] << endl;
+		exit(1);
+	}
+	fwrite(newimage_Fixed, sizeof(unsigned char), width*height*BytesPerPixel, file);
+	fclose(file);
+	/*if (!(file=fopen(argv[3],"wb"))) {
+		cout << "Cannot open file: " << argv[2] << endl;
+		exit(1);
+	}
+	fwrite(hit_uncc, sizeof(unsigned char), width*height*BytesPerPixel, file);
+	fclose(file);*/
+	
+	return 0;
+}
+unsigned char *thin_main(unsigned char * actual_image, int height, int width, int BytesPerPixel)
+{
+	unsigned char *newimage_temp= new unsigned char [width*height*BytesPerPixel];
+	
+	unsigned char *hit_c= new unsigned char [width*height*BytesPerPixel]; //0&1
+	unsigned char *hit_unc= new unsigned char [width*height*BytesPerPixel];//0&1
+	
+
+	hit_c=pattern_gen_and_return_hit1(actual_image,height,width,BytesPerPixel);
+
+	
+	hit_unc=pattern_gen_and_return_hit2(hit_c,actual_image,height,width,BytesPerPixel);
+
+
+	return hit_c;
+
+}
+
+
+//thin_cond Conditional Pattern
+unsigned char *pattern_gen_and_return_hit1(unsigned char *newimage_Fixed, int height, int width,int BytesPerPixel)
+{
+	unsigned char *hit_c= new unsigned char [width*height*BytesPerPixel];
+	int x=0,mark=0;
+	unsigned char a[8]={0};
+	for( int i=0;i<height;i++)
+	{
+		for(int j=0;j<width;j++)
+		{
+			if(newimage_Fixed[(i*width)+(j)]==0)
+			{
+				//cout<<"yes";
+				hit_c[(i*width)+j]=0;
+				//cout<<"I:"<<i<<"\tJ:"<<j<<"\tMark:0"<<endl;
+				
+				
+			}
+			else if(newimage_Fixed[(i*width)+(j)]==1)
+			{
+			
+
+				a[0]=newimage_Fixed[(i*width)+(j+1)];
+				a[1]=newimage_Fixed[((i-1)*width)+(j+1)];
+				a[2]=newimage_Fixed[((i-1)*width)+(j)];
+				a[3]=newimage_Fixed[((i-1)*width)+(j-1)];
+				a[4]=newimage_Fixed[(i*width)+(j-1)];
+				a[5]=newimage_Fixed[((i+1)*width)+(j-1)];
+				a[6]=newimage_Fixed[((i+1)*width)+(j)];
+				a[7]=newimage_Fixed[((i+1)*width)+(j+1)];
+				//cout<<"thin"<<endl;
+				mark=thin_cond(a,x);
+			
+				//cout<<"I:"<<i<<"\tJ:"<<j<<"\tMark:"<<mark<<endl;
+				hit_c[(i*width)+j]=mark;
+				//cout<<"Mark:"<<(int)hit_c[(i*width)+j]<<endl;
+				
+			}
+		}
+	}
+	return hit_c;
+}
+
+unsigned char *pattern_gen_and_return_hit2(unsigned char *newimage_Fixed,unsigned char *actual_image, int height, int width,int BytesPerPixel)
+{
+	//unsigned char *hit_c= new unsigned char [width*height*BytesPerPixel];
+	int x=0,mark=0;
+	unsigned char *rehit= new unsigned char [width*height*BytesPerPixel];
+	unsigned char a[8]={0};
+	for( int i=1;i<height-1;i++)
+	{
+		for(int j=1;j<width-1;j++)
+		{
+			if(newimage_Fixed[(i*width)+(j)]==0)
+			{
+				rehit[(i*width)+j]=actual_image[(i*width)+j];
+
+				//continue;
+			}
+			else if (newimage_Fixed[(i*width)+(j)]==1)
+			{
+				a[0]=newimage_Fixed[(i*width)+(j+1)];
+				a[1]=newimage_Fixed[((i-1)*width)+(j+1)];
+				a[2]=newimage_Fixed[((i-1)*width)+(j)];
+				a[3]=newimage_Fixed[((i-1)*width)+(j-1)];
+				a[4]=newimage_Fixed[(i*width)+(j-1)];
+				a[5]=newimage_Fixed[((i+1)*width)+(j-1)];
+				a[6]=newimage_Fixed[((i+1)*width)+(j)];
+				a[7]=newimage_Fixed[((i+1)*width)+(j+1)];
+			
+				//cout<<"reverse"<<endl;
+				mark=unc_shrink_thin(a,x);
+				if(mark==1)
+				{
+					rehit[(i*width)+j]=actual_image[(i*width)+j];
+		
+					continue;
+				}
+				else
+				{
+					rehit[(i*width)+j]=0;//255*(actual_image[(i*width)+j]);//255*actual_image[(i*width)+j];
+					//cout<<"hele:\n";
+				}
+
+				
+				
+				//cout<<"Mark:"<<mark<<endl;
+				
+
+			}
+		}
+	}
+	return rehit;
+	//return actual_image;
+
+}
+
+//UNConditional Pattern
+unsigned char thin_cond(unsigned char *a, int size)
+{
+	
+	int ret=0;
+	/*cout<<"\t The elements are:";//<<(int)pat<<endl;
+	
+	//cout<<"enter thin:"<<endl;
+	
+	for(int g=0;g<8;g++)
+	{
+		cout<<"\t"<<(int)a[g];
+		//cout<<"h";
+	}
+	cout<<endl;*/
+	
+	
+	//TK: bond 4:
+	//1
+	if(a[0]==1 && a[1]==0 && a[2]==1 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==0 && a[1]==0 && a[2]==1 && a[3]==0 && a[4]==1 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==1 && a[5]==0 && a[6]==1 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==1 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==1 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//STK: Bond 4:
+	//1
+	else if(a[0]==1 && a[1]==1 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==0 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//ST 1: bond5:
+	//1
+	else if(a[0]==1 && a[1]==0 && a[2]==1 && a[3]==1 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==1 && a[1]==0 && a[2]==1 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==1 && a[2]==1 && a[3]==0 && a[4]==1 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==1 && a[1]==1 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==1 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//ST 2: Bond 5
+	//1
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==0 && a[1]==0 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==1 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//ST : Bond 6
+	//1
+	else if(a[0]==1 && a[1]==0 && a[2]==1 && a[3]==1 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==0 && a[1]==1 && a[2]==1 && a[3]==0 && a[4]==1 && a[5]==1 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//STK: Bond 6
+	//1
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==0 && a[1]==0 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==0 && a[7]==0)
+	{
+		ret=1;
+	}
+	//5
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//6
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//7
+	else if(a[0]==1 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//8
+	else if(a[0]==1 && a[1]==1 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//STK : bond 7
+	//1
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==0 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==1 && a[1]==1 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//STK: bond 8
+	//1
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==0 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==1 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//STK: bond 9
+	//1
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==0 && a[5]==0 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==0 && a[4]==0 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==0 && a[6]==0 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//5
+	else if(a[0]==0 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//6
+	else if(a[0]==0 && a[1]==0 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//7
+	else if(a[0]==1 && a[1]==0 && a[2]==0 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//8
+	else if(a[0]==1 && a[1]==1 && a[2]==0 && a[3]==0 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//STK: Bond 10:
+	//1
+	else if(a[0]==0 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==1 && a[1]==1 && a[2]==0 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==0 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==0 && a[7]==1 )
+	{
+		ret=1;
+	}
+	else
+	{
+		ret=0;
+	}
+
+
+	
+	return ret;
+}
+
+
+
+
+
+
+
+
+unsigned char unc_shrink_thin(unsigned char *a, int size)
+{
+	int ret=0;
+	//spur
+	//1
+	if(a[0]==0 && a[1]==1 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0)
+	{
+		ret=1;
+	} 
+	//2
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==1 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0)
+	{
+		ret=1;
+	}
+	//single 4 connection:
+	//1
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==1 && a[7]==0)
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==1 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0)
+	{
+		ret=1;
+	}
+	// L cluster:
+	//1
+	else if(a[0]==1&& a[1]==1 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0)
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==0 && a[1]==1 && a[2]==1 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0)
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==0 && a[2]==1 && a[3]==1 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0)
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==1 && a[4]==1 && a[5]==0 && a[6]==0 && a[7]==0)
+	{
+		ret=1;
+	}
+	//5
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==1 && a[5]==1 && a[6]==0 && a[7]==0)
+	{
+		ret=1;
+	}
+	//6
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==1 && a[6]==1 && a[7]==0)
+	{
+		ret=1;
+	}
+	//7
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==1 && a[7]==1)
+	{
+		ret=1;
+	}
+	//8
+	else if(a[0]==1 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==1)
+	{
+		ret=1;
+	}
+	//4-connected offset
+	//1
+	else if(a[0]==0 && a[1]==1 && a[2]==1 && a[3]==0 && a[4]==1 && a[5]==0 && a[6]==0 && a[7]==0)
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==1 && a[1]==0 && a[2]==1 && a[3]==1 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0)
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==1 && a[1]==0 && a[2]==1 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==1)
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==1 && a[1]==1 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==1 && a[7]==0)
+	{
+		ret=1;
+	}
+	//Spur corner cluster
+	//1
+	else if((a[0]==1 || a[2]==1)==1 && a[1]==1  && a[3]==1 && a[4]==0 && a[5]==1 && a[6]==0 && a[7]==0)
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==0 && a[1]==0 && (a[2]==1 || a[4]==1)==1 && a[3]==0  && a[5]==0 && a[6]==0 && a[7]==1)
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==1 && a[2]==0 && a[3]==0 && (a[4]==1 || a[6]==1)==1 && a[5]==1 && a[7]==0)
+	{
+		ret=1;
+	}
+	//4
+	else if((a[0]==1 || a[6]==1)==1 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==1 && a[5]==0 && a[7]==1)
+	{
+		ret=1;
+	}
+	//corner cluster
+	else if(a[2]==1 && a[3]==1 && a[4]==1)
+	{
+		ret=1;
+	}
+		//Tee Branch
+		//1
+		else if((a[0]==1) && (a[1]==0 ) && a[2]==1 && a[4]==1 && (a[6]==0 ) && (a[7]==0 ))
+		{
+			ret=1;
+		}
+		//2
+		else if((a[0]==1) && a[2]==1 && a[3]==0 && a[4]==1 && (a[5]==0 )&& (a[6]==0 ))
+		{
+			ret=1;
+		}
+		//3
+		else if((a[0]==1) && a[2]==0 && a[3]==0 && a[4]==1 && (a[5]==0 )&& (a[6]==1 ))
+		{
+			ret=1;
+		}
+		//4
+		else if((a[0]==1) && (a[1]==0 ) && a[2]==0 &&  a[4]==1 && (a[6]==1 ) && (a[7]==0 ))
+		{
+			ret=1;
+		}
+		//5
+		else if((a[0]==0) && a[2]==1 && a[4]==1 && (a[5]==0 )&& (a[6]==1 ) && (a[7]==0 ))
+		{
+			ret=1;
+		}
+		//6
+		else if((a[0]==0) && (a[1]==0 ) && a[2]==1 && a[3]==0 && a[4]==1 && (a[6]==1 ))
+		{
+			ret=1;
+		}
+		//7
+		else if((a[0]==1) && (a[1]==0 ) && a[2]==1 && a[3]==0 && a[4]==0 && (a[6]==1 ))
+		{
+			ret=1;
+		}
+		//8
+		else if((a[0]==1) && a[2]==1 && a[4]==0 && (a[5]==0 )&& (a[6]==1 ) && (a[7]==0 ))
+		{
+			ret=1;
+		}
+		//Vee branch
+		//1
+		else if( (a[1]==1 ) &&  a[3]==1 && (a[5]==1 || a[6]==1 || a[7]==1 )==1)
+		{
+			ret=1;
+		}
+		//2
+		else if(a[3]==1 && a[5]==1 && (a[0]==1 || a[1]==1 || a[7]==1)==1)
+		{
+			ret=1;
+		}
+		//3
+		else if((a[1]==1 || a[2]==1 || a[3]==1)==1 && a[5]==1 && a[7]==1)
+		{
+			ret=1;
+		}
+		//4
+		else if((a[1]==1) && (a[7]==1 ) && (a[3]==1||a[4]==1||a[5]==1)==1)
+		{
+			ret=1;
+		}
+		//Diagnol Branch
+		//1
+		else if(a[0]==1 && a[2]==1 && a[5]==1 && a[1]==0 && a[4]==0 && a[6]==0)
+		{
+			ret=1;
+		}
+		//2
+		else if(a[0]==0 && a[3]==0 && a[6]==0 && a[2]==1 && a[4]==1 && a[7]==1)
+		{
+			ret=1;
+		}
+		//3
+		else if(a[1]==1 && a[4]==1 && a[6]==1 && a[0]==0 && a[2]==0 && a[5]==0)
+		{
+			ret=1;
+		}
+		//4
+		else if(a[0]==1 && a[3]==1 && a[6]==1 && a[2]==0 && a[4]==0 && a[7]==0)
+		{
+			ret=1;
+		}
+		else
+		{
+
+			ret=0;
+		}
+		
+	
+
+	
+
+	
+	return ret;
+
+}
+
+
+
+unsigned char *fixed_Dithering(unsigned char *Image_data, int height, int width, int bytesPerPixel)
+{
+	unsigned char *new_image = new unsigned char [width*height*bytesPerPixel];
+	int threshold_fixed=127;
+	for(int i=0 ; i<height ; i++)
+	{
+		for(int j=0; j<width ; j++)
+		{
+			if(Image_data[(i*width)+j]<threshold_fixed)
+			{
+				new_image[(i*width)+j]=1;
+			}
+			else if(Image_data[(i*width)+j]>=threshold_fixed)
+			{
+				new_image[(i*width)+j]=0;
+			}
+		}
+	}
+
+	return new_image;
+}
+unsigned char *copy(unsigned char *Image_data, int height, int width, int bytesPerPixel)
+{
+	//cout<<"Copy:\n";
+	unsigned char *new_image = new unsigned char [width*height*bytesPerPixel];
+	int threshold_fixed=1;
+	for(int i=0 ; i<height ; i++)
+	{
+		for(int j=0; j<width ; j++)
+		{
+			if(Image_data[(i*width)+j]==threshold_fixed)
+			{
+				new_image[(i*width)+j]=1;
+			}
+			else 
+			{
+				new_image[(i*width)+j]=0;
+			}
+		}
+	}
+
+	return new_image;
+	//return a;
+}
+unsigned char *convert1_255(unsigned char *a)
+{
+	//cout<<"Covert 1 -> 255:\n";
+	for(int i=0;i<100;i++)
+	{
+		for(int j=0;j<100;j++)
+		{
+			if(a[(i*100)+j]==0)
+				continue;
+			else
+			{
+				a[(i*100)+j]=255;
+				//printf("%u\n",a[(i*640)+j]);
+			}
+		}
+	}
+	return a;
+}
+
+unsigned char *invert(unsigned char *a)
+{
+	//cout<<"Covert 1 -> 255:\n";
+	for(int i=0;i<100;i++)
+	{
+		for(int j=0;j<100;j++)
+		{
+			if(a[(i*100)+j]==0)
+				a[(i*100)+j]=255;
+			else
+			{
+				a[(i*100)+j]=0;
+				//printf("%u\n",a[(i*640)+j]);
+			}
+		}
+	}
+	return a;
+}
+
+######################################################################################################
+
+Program 9: Skeleton.cpp
+
+#include <stdio.h>
+#include <iostream>
+#include <stdlib.h>
+#include<math.h>
+#include<random>
+using namespace std;
+//FUNCTIONS USED
+
+unsigned char *skleton_main(unsigned char * Image, int height, int wid, int BytesPerPixel);
+unsigned char *pattern_gen_and_return_hit1(unsigned char *Image_data, int height, int width, int BytesPerPixel);
+unsigned char *pattern_gen_and_return_hit2(unsigned char *Image_data,unsigned char *Image, int height, int width, int BytesPerPixel);
+unsigned char skleton_cond(unsigned char *a, int size);
+unsigned char unc_skletonizing(unsigned char *a, int size);
+
+unsigned char *fixed_Dithering(unsigned char *Image_data, int height, int width, int bytesPerPixel);
+unsigned char *convert1_255(unsigned char *a);
+unsigned char *copy(unsigned char *Image_data, int height, int width, int bytesPerPixel);
+unsigned char *invert(unsigned char *a);
+
+
+//Main Func
+int main(int argc, char *argv[])
+{
+	// Define file pointer and variables
+	FILE *file;
+	int BytesPerPixel=1;
+	int width = 100 , height = 100;
+
+	unsigned char *Imagedata= new unsigned char [width*height*BytesPerPixel];
+	unsigned char *newimage_Fixed= new unsigned char [width*height*BytesPerPixel];
+	unsigned char *newimage_temp= new unsigned char [width*height*BytesPerPixel];
+	
+	//read input
+	if (!(file=fopen(argv[1],"rb"))) {
+		cout << "Cannot open file: " << argv[1] <<endl;
+		exit(1);
+	}
+	fread(Imagedata, sizeof(unsigned char), width*height*BytesPerPixel, file);
+	fclose(file);
+
+	
+	newimage_Fixed=fixed_Dithering(Imagedata,height,width,BytesPerPixel); // 0 & 1
+	newimage_temp=fixed_Dithering(Imagedata,height,width,BytesPerPixel);
+	//newimage_temp=convert1_255(newimage_temp);
+	
+	
+	
+	for(int i=0;i<20;i++)
+	{
+		newimage_temp=skleton_main(newimage_Fixed,height,width,BytesPerPixel);
+		newimage_Fixed=copy(newimage_temp,height,width,BytesPerPixel);
+	}
+	
+	newimage_Fixed=convert1_255(newimage_temp);
+	//newimage_Fixed=invert(newimage_Fixed);
+	//write output
+	if (!(file=fopen(argv[2],"wb"))) {
+		cout << "Cannot open file: " << argv[2] << endl;
+		exit(1);
+	}
+	fwrite(newimage_Fixed, sizeof(unsigned char), width*height*BytesPerPixel, file);
+	fclose(file);
+	
+	return 0;
+}
+
+
+
+unsigned char *skleton_main(unsigned char * actual_image, int height, int width, int BytesPerPixel)
+{
+	unsigned char *newimage_temp= new unsigned char [width*height*BytesPerPixel];
+	
+	unsigned char *hit_c= new unsigned char [width*height*BytesPerPixel]; //0&1
+	unsigned char *hit_unc= new unsigned char [width*height*BytesPerPixel];//0&1
+	
+
+	hit_c=pattern_gen_and_return_hit1(actual_image,height,width,BytesPerPixel);
+
+	
+	hit_unc=pattern_gen_and_return_hit2(hit_c,actual_image,height,width,BytesPerPixel);
+
+
+	return hit_unc;
+
+}
+
+
+//skleton_cond Conditional Pattern
+unsigned char *pattern_gen_and_return_hit1(unsigned char *newimage_Fixed, int height, int width,int BytesPerPixel)
+{
+	unsigned char *hit_c= new unsigned char [width*height*BytesPerPixel];
+	int x=0,mark=0;
+	unsigned char a[8]={0};
+	for( int i=1;i<height;i++)
+	{
+		for(int j=1;j<width;j++)
+		{
+			if(newimage_Fixed[(i*width)+(j)]==0)
+			{
+				//cout<<"yes";
+				hit_c[(i*width)+j]=0;
+				//cout<<"I:"<<i<<"\tJ:"<<j<<"\tMark:0"<<endl;
+				
+				
+			}
+			else if(newimage_Fixed[(i*width)+(j)]==1)
+			{
+			
+
+				a[0]=newimage_Fixed[(i*width)+(j+1)];
+				a[1]=newimage_Fixed[((i-1)*width)+(j+1)];
+				a[2]=newimage_Fixed[((i-1)*width)+(j)];
+				a[3]=newimage_Fixed[((i-1)*width)+(j-1)];
+				a[4]=newimage_Fixed[(i*width)+(j-1)];
+				a[5]=newimage_Fixed[((i+1)*width)+(j-1)];
+				a[6]=newimage_Fixed[((i+1)*width)+(j)];
+				a[7]=newimage_Fixed[((i+1)*width)+(j+1)];
+				//cout<<"skleton"<<endl;
+				mark=skleton_cond(a,x);
+			
+				//cout<<"I:"<<i<<"\tJ:"<<j<<"\tMark:"<<mark<<endl;
+				hit_c[(i*width)+j]=mark;
+				//cout<<"Mark:"<<(int)hit_c[(i*width)+j]<<endl;
+				
+			}
+		}
+	}
+	return hit_c;
+}
+
+unsigned char *pattern_gen_and_return_hit2(unsigned char *newimage_Fixed,unsigned char *actual_image, int height, int width,int BytesPerPixel)
+{
+	//unsigned char *hit_c= new unsigned char [width*height*BytesPerPixel];
+	int x=0,mark=0;
+	unsigned char *rehit= new unsigned char [width*height*BytesPerPixel];
+	unsigned char a[8]={0};
+	for( int i=1;i<height;i++)
+	{
+		for(int j=1;j<width;j++)
+		{
+			if(newimage_Fixed[(i*width)+(j)]==0)
+			{
+				rehit[(i*width)+j]=actual_image[(i*width)+j];
+
+				//continue;
+			}
+			else if (newimage_Fixed[(i*width)+(j)]==1)
+			{
+				a[0]=newimage_Fixed[(i*width)+(j+1)];
+				a[1]=newimage_Fixed[((i-1)*width)+(j+1)];
+				a[2]=newimage_Fixed[((i-1)*width)+(j)];
+				a[3]=newimage_Fixed[((i-1)*width)+(j-1)];
+				a[4]=newimage_Fixed[(i*width)+(j-1)];
+				a[5]=newimage_Fixed[((i+1)*width)+(j-1)];
+				a[6]=newimage_Fixed[((i+1)*width)+(j)];
+				a[7]=newimage_Fixed[((i+1)*width)+(j+1)];
+			
+				//cout<<"reverse"<<endl;
+				mark=unc_skletonizing(a,x);
+				if(mark==1)
+				{
+					rehit[(i*width)+j]=actual_image[(i*width)+j];
+					//actual_image[(i*width)+j]=255;
+					//cout<<"he:\n";
+					//rehit[(i*width)+j]=1;
+					//actual_image[(i*width)+j]=1;
+					//continue;
+				}
+				else
+				{
+					rehit[(i*width)+j]=0;//255*(actual_image[(i*width)+j]);//255*actual_image[(i*width)+j];
+					//cout<<"hele:\n";
+				}
+
+				
+				
+				//cout<<"Mark:"<<mark<<endl;
+				
+
+			}
+		}
+	}
+	return rehit;
+	//return actual_image;
+
+}
+
+//UNConditional Pattern
+unsigned char skleton_cond(unsigned char *a, int size)
+{
+	
+	int ret=0;
+	/*cout<<"\t The elements are:";//<<(int)pat<<endl;
+	
+	//cout<<"enter skleton:"<<endl;
+	
+	for(int g=0;g<8;g++)
+	{
+		cout<<"\t"<<(int)a[g];
+		//cout<<"h";
+	}
+	cout<<endl;*/
+	//TK: bond 4:
+	//1
+	if(a[0]==1 && a[1]==0 && a[2]==1 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==0 && a[1]==0 && a[2]==1 && a[3]==0 && a[4]==1 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==1 && a[5]==0 && a[6]==1 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==1 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==1 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//STK: Bond 4:
+	//1
+	else if(a[0]==1 && a[1]==1 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==0 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	
+	
+	
+	//STK: Bond 6
+	//1
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==0 && a[1]==0 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==0 && a[7]==0)
+	{
+		ret=1;
+	}
+	//5
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//6
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//7
+	else if(a[0]==1 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//8
+	else if(a[0]==1 && a[1]==1 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//STK : bond 7
+	//1
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==0 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==1 && a[1]==1 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//STK: bond 8
+	//1
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==0 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==1 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//STK: bond 9
+	//1
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==0 && a[5]==0 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==0 && a[4]==0 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==0 && a[6]==0 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//5
+	else if(a[0]==0 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//6
+	else if(a[0]==0 && a[1]==0 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//7
+	else if(a[0]==1 && a[1]==0 && a[2]==0 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//8
+	else if(a[0]==1 && a[1]==1 && a[2]==0 && a[3]==0 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//STK: Bond 10:
+	//1
+	else if(a[0]==0 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==1 && a[1]==1 && a[2]==0 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==0 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==0 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//K: bond 11
+	//1
+	else if(a[0]==1 && a[1]==0 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==0 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==0 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==1 && a[1]==1 && a[2]==1 && a[3]==1 && a[4]==1 && a[5]==1 && a[6]==1 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//else
+	else
+	{
+		ret=0;
+	}
+
+
+	
+	return ret;
+}
+
+
+
+
+
+
+
+
+unsigned char unc_skletonizing(unsigned char *a, int size)
+{
+	int ret=0;
+	//spur
+	//1
+	if(a[0]==0 && a[1]==1 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==1 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==1 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//single 4 connection
+	//1
+	else if(a[0]==1 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==0 && a[1]==0 && a[2]==1 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==1 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==1 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//L corner
+	//1
+	else if(a[0]==1 && a[1]==0 && a[2]==1 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==0 && a[1]==0 && a[2]==1 && a[3]==0 && a[4]==1 && a[5]==0 && a[6]==0 && a[7]== 0)
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==1 && a[5]==0 && a[6]==1 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==1 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==1 && a[7]==0 )
+	{
+		ret=1;
+	}
+	//corner cluster
+	//1
+	else if(a[2]==1 && a[3]==1 && a[4]==1 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==1 && a[6]==1 && a[7]==1 )
+	{
+		ret=1;
+	}
+	//tee branch
+	//1
+	else if(a[0]==1  && a[2]==1  && a[4]==1 )
+	{
+		ret=1;
+	}
+	//2
+	else if(a[2]==1  && a[4]==1 &&  a[6]==1  )
+	{
+		ret=1;
+	}
+	//3
+	else if(a[0]==1 && a[4]==1 && a[6]==1  )
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==1 && a[2]==1 &&  a[6]==1 )
+	{
+		ret=1;
+	}
+	//Vee branch
+		//1
+	else if( (a[1]==1 ) &&  a[3]==1 && (a[5]==1 || a[6]==1 || a[7]==1 )==1)
+	{
+		ret=1;
+	}
+	//2
+	else if(a[3]==1 && a[5]==1 && (a[0]==1 || a[1]==1 || a[7]==1)==1)
+	{
+		ret=1;
+	}
+	//3
+	else if((a[1]==1 || a[2]==1 || a[3]==1)==1 && a[5]==1 && a[7]==1)
+	{
+		ret=1;
+	}
+	//4
+	else if((a[1]==1) && (a[7]==1 ) && (a[3]==1||a[4]==1||a[5]==1)==1)
+	{
+		ret=1;
+	}
+	//Diagnol Branch
+	//1
+	else if(a[0]==1 && a[2]==1 && a[5]==1 && a[1]==0 && a[4]==0 && a[6]==0)
+	{
+		ret=1;
+	}
+	//2
+	else if(a[0]==0 && a[3]==0 && a[6]==0 && a[2]==1 && a[4]==1 && a[7]==1)
+	{
+		ret=1;
+	}
+	//3
+	else if(a[1]==1 && a[4]==1 && a[6]==1 && a[0]==0 && a[2]==0 && a[5]==0)
+	{
+		ret=1;
+	}
+	//4
+	else if(a[0]==1 && a[3]==1 && a[6]==1 && a[2]==0 && a[4]==0 && a[7]==0)
+	{
+		ret=1;
+	}
+	else
+	{
+		ret=0;
+	}
+
+
+
+	
+
+	
+	return ret;
+
+}
+
+
+
+unsigned char *fixed_Dithering(unsigned char *Image_data, int height, int width, int bytesPerPixel)
+{
+	unsigned char *new_image = new unsigned char [width*height*bytesPerPixel];
+	int threshold_fixed=127;
+	for(int i=0 ; i<height ; i++)
+	{
+		for(int j=0; j<width ; j++)
+		{
+			if(Image_data[(i*width)+j]<threshold_fixed)
+			{
+				new_image[(i*width)+j]=1;
+			}
+			else if(Image_data[(i*width)+j]>=threshold_fixed)
+			{
+				new_image[(i*width)+j]=0;
+			}
+		}
+	}
+
+	return new_image;
+}
+unsigned char *copy(unsigned char *Image_data, int height, int width, int bytesPerPixel)
+{
+	//cout<<"Copy:\n";
+	unsigned char *new_image = new unsigned char [width*height*bytesPerPixel];
+	int threshold_fixed=1;
+	for(int i=0 ; i<height ; i++)
+	{
+		for(int j=0; j<width ; j++)
+		{
+			if(Image_data[(i*width)+j]==threshold_fixed)
+			{
+				new_image[(i*width)+j]=1;
+			}
+			else 
+			{
+				new_image[(i*width)+j]=0;
+			}
+		}
+	}
+
+	return new_image;
+	//return a;
+}
+unsigned char *convert1_255(unsigned char *a)
+{
+	//cout<<"Covert 1 -> 255:\n";
+	for(int i=0;i<480;i++)
+	{
+		for(int j=0;j<640;j++)
+		{
+			if(a[(i*640)+j]==0)
+				continue;
+			else
+			{
+				a[(i*640)+j]=255;
+				//printf("%u\n",a[(i*640)+j]);
+			}
+		}
+	}
+	return a;
+}
+
+unsigned char *invert(unsigned char *a)
+{
+	//cout<<"Covert 1 -> 255:\n";
+	for(int i=0;i<480;i++)
+	{
+		for(int j=0;j<640;j++)
+		{
+			if(a[(i*640)+j]==0)
+				a[(i*640)+j]=255;
+			else
+			{
+				a[(i*640)+j]=0;
+				//printf("%u\n",a[(i*640)+j]);
+			}
+		}
+	}
+	return a;
+}
+
+
+##################################################################################
+Program 10: counting_game.cpp
+
+#include <stdio.h>
+#include <iostream>
+#include <stdlib.h>
+#include<math.h>
+
+using namespace std;
+int iden=0;
+//functions used:
+unsigned char *fixed_Dithering(unsigned char *Image_data, int height, int width, int bytesPerPixel);
+unsigned char *convert1_255(unsigned char *a, int height, int width, int bytesPerPixel);
+int non_zero_min(int *a);
+unsigned char *invert(unsigned char *a, int height, int width, int bytesPerPixel);
+int * label_loop(unsigned char *fixed_image,int *label,int height,int width,int BytesPerPixel);
+int checker(int x,int *a, int size);
+int count(int * l, int height,int width, int BytesPerPixel,int x);
+int *dimension(int *i,int height,int width, int BytesPerPixel,int x);
+void call_compare(int *q, int *d,int * label);
+void compare(int *q,int *label, int *dim, int i, int j, int &el, int op);
+void compare2(int *q,int *label, int *dim, int i, int j, int &el, int op);
+
+
+int main(int argc, char *argv[])
+{
+	// Define file pointer and variables
+	FILE *file;
+	int BytesPerPixel=1;
+	int width = 372 , height = 372;
+
+	unsigned char *Imagedata= new unsigned char [width*height*BytesPerPixel];
+	int *label= new int [width*height*BytesPerPixel];
+
+	unsigned char *final= new unsigned char [width*height*BytesPerPixel];
+	unsigned char *newimage_Fixed= new unsigned char [width*height*BytesPerPixel];
+	unsigned char *newimage_temp= new unsigned char [width*height*BytesPerPixel];
+	
+	int a[8]={0};
+	int label_var=0,min=0;
+	//read input
+	if (!(file=fopen(argv[1],"rb"))) {
+		cout << "Cannot open file: " << argv[1] <<endl;
+		exit(1);
+	}
+	fread(Imagedata, sizeof(unsigned char), width*height*BytesPerPixel, file);
+	fclose(file);
+
+	newimage_Fixed=fixed_Dithering(Imagedata,height,width,BytesPerPixel);
+	newimage_Fixed=invert(newimage_Fixed,height,width,BytesPerPixel);
+	
+	//labelling:
+	for (int i=1; i<height-1 ; i++)
+	{
+		for( int j=1; j<width-1; j++)
+		{
+			if(newimage_Fixed[(i*width)+j]==0)
+			{
+				label[(i*width)+j]=0;
+			}
+			else if(newimage_Fixed[(i*width)+j]==1)
+			{
+				if(label[(i*width)+(j)]==0)
+				{
+					++label_var;
+					//cout<<"New label:"<<label_var<<endl;
+					label[(i*width)+(j)]=label_var;
+
+					if(newimage_Fixed[(i*width)+(j+1)]!=0)
+					{
+						label[(i*width)+(j+1)]=label_var;
+					}
+					if(newimage_Fixed[((i-1)*width)+(j+1)]!=0)
+					{
+						label[((i-1)*width)+(j+1)]=label_var;
+					}
+					if(newimage_Fixed[((i-1)*width)+(j+1)]!=0)
+					{
+						label[((i-1)*width)+(j+1)]=label_var;
+					}
+					if(newimage_Fixed[((i-1)*width)+(j)]!=0)
+					{
+						label[((i-1)*width)+(j)]=label_var;
+					}
+					if(newimage_Fixed[((i-1)*width)+(j-1)]!=0)
+					{
+						label[((i-1)*width)+(j-1)]=label_var;
+					}
+					if(newimage_Fixed[(i*width)+(j-1)]!=0)
+					{
+						label[(i*width)+(j-1)]=label_var;
+					}
+					if(newimage_Fixed[((i+1)*width)+(j-1)]!=0)
+					{
+						label[((i+1)*width)+(j-1)]=label_var;
+					}
+					if(newimage_Fixed[((i+1)*width)+(j)]!=0)
+					{
+						label[((i+1)*width)+(j)]=label_var;
+					}
+					if(newimage_Fixed[((i+1)*width)+(j+1)]!=0)
+					{
+						label[((i+1)*width)+(j+1)]=label_var;
+					}	
+
+				}
+				else
+				{
+					a[0]=label[(i*width)+(j+1)];
+					a[1]=label[((i-1)*width)+(j+1)];
+					a[2]=label[((i-1)*width)+(j)];
+					a[3]=label[((i-1)*width)+(j-1)];
+					a[4]=label[(i*width)+(j-1)];
+					a[5]=label[((i+1)*width)+(j-1)];
+					a[6]=label[((i+1)*width)+(j)];
+					a[7]=label[((i+1)*width)+(j+1)];
+					/*
+					cout<<"The actual:";
+					for(int k=0;k<8;k++)
+						cout<<a[k]<<"\t";
+					cout<<endl;
+					*/ 
+					min=non_zero_min(a);
+					//cout<<"Min:"<<min<<endl;
+					
+						if(newimage_Fixed[(i*width)+j]!=0)
+						{
+							label[(i*width)+j]=min;
+						}
+						if(newimage_Fixed[(i*width)+(j+1)]!=0)
+						{
+							label[(i*width)+(j+1)]=min;
+						}
+						if(newimage_Fixed[((i-1)*width)+(j+1)]!=0)
+						{
+							label[((i-1)*width)+(j+1)]=min;
+						}
+						if(newimage_Fixed[((i-1)*width)+(j+1)]!=0)
+						{
+							label[((i-1)*width)+(j+1)]=min;
+						}
+						if(newimage_Fixed[((i-1)*width)+(j)]!=0)
+						{
+							label[((i-1)*width)+(j)]=min;
+						}
+						if(newimage_Fixed[((i-1)*width)+(j-1)]!=0)
+						{
+							label[((i-1)*width)+(j-1)]=min;
+						}
+						if(newimage_Fixed[(i*width)+(j-1)]!=0)
+						{
+							label[(i*width)+(j-1)]=min;
+						}
+						if(newimage_Fixed[((i+1)*width)+(j-1)]!=0)
+						{
+							label[((i+1)*width)+(j-1)]=min;
+						}
+						if(newimage_Fixed[((i+1)*width)+(j)]!=0)
+						{
+							label[((i+1)*width)+(j)]=min;
+						}
+						if(newimage_Fixed[((i+1)*width)+(j+1)]!=0)
+						{
+							label[((i+1)*width)+(j+1)]=min;
+						}	
+					
+				}
+				//cout<<"Class label:"<<(int)label[(i*width)+j]<<endl;
+			}
+		}
+	}
+	
+
+
+	for(int k=0;k<200;k++)
+	{
+		label=label_loop(newimage_Fixed,label,height,width,BytesPerPixel);
+	}
+
+	int var=-2;
+	int h=0;
+	int d=0;
+	int *ss= new int [h];
+	int la[16]={0};
+	for(int i=1;i<height-1;i++)
+	{
+		for(int j=1;j<width-1;j++)
+		{
+			if(label[(i*width)+j]!=0 && label[(i*width)+j]!=var)
+			{
+				ss[h++]=label[(i*width)+j];
+
+			}
+		}
+	}
+	cout<<"Actual Lable:"<<endl;                             ///////////////////////////////////////
+	for(int i=0;i<h;i++)
+	{
+		if(ss[i]==0)
+			continue;
+		else
+		{
+			la[d]=ss[i];
+			d++;
+			//cout<<"\t:"<<ss[i];
+		}
+		for(int j=i+1;j<h;j++)
+		{
+			if(ss[j]==ss[i])
+			{
+				ss[j]=0;
+			}
+
+		}
+	}
+	//cout<<endl;
+	for(int k=0;k<16;k++)
+	{
+		cout<<"\t:"<<la[k]; 							       	//////////////////////////////////////
+	}
+	cout<<endl;
+	cout<<"Modified Lable:"<<endl;                           ////////////////////////////////////////
+	int k=0;
+	for(k=0;k<16;k++)
+	{
+		
+		cout<<"\t:"<<k+1;
+	}
+	cout<<endl;
+	cout<<"Number of Objects Indentified is :"<<k<<endl;       //////////////////////////////////////////////
+	cout<<"\n\nIdentifying Objects:......\n\n\n";
+	
+	
+	for(int i=1;i<height-1;i++)
+	{
+		for(int j=1;j<width-1;j++)
+		{	
+			//cout<<"L"<<endl;
+			if(label[(i*width)+j]!=0)//!=0 )//&& label[(i*width)+j]>var)
+			{
+				for(int g=0;g<16;g++)
+				{
+					if(label[(i*width)+j]==la[g])
+						label[(i*width)+j]=g+1;
+
+				}
+				
+			}
+		}
+	}
+
+	
+	for(int g=0; g<16; g++)
+	{
+		for(int i=1;i<height-1;i++)
+		{
+			for(int j=1;j<width-1;j++)
+			{
+				if(label[(i*width)+j]!=0)
+				{
+					if(label[(i*width)+j]==g+1)
+					{
+						newimage_Fixed[(i*width)+j]= 15*(g+1);
+						if(newimage_Fixed[(i*width)+j]==15)
+							newimage_Fixed[(i*width)+j]=200;
+					}
+				}
+			}
+		}
+	}
+
+
+	
+	var=-2;
+	//cout<<"2:"<<endl;
+	for(int i=1;i<height-1;i++)
+	{
+		for(int j=1;j<width-1;j++)
+		{	
+			//cout<<"L"<<endl;
+			if(label[(i*width)+j]>0)// && label[(i*width)+j]>var)
+			{
+				//cout<<"I:"<<i<<"\tJ:"<<j<<"\t\t\tClass label:"<<label[(i*width)+j]<<endl;
+				var=label[(i*width)+j];
+			}
+		}
+	}
+	int q[16]={0};
+	int p=0;
+	//int dim[16][6]={{0}};
+	int *dim=new int (p);
+	int *ddd= new int(p);
+	//counter && range
+	for(int i=0;i<16;i++)
+	{
+		for(int j=0;j<6;j++)
+		{
+			q[i]=count(label,height,width,BytesPerPixel,i+1);
+		
+			ddd=dimension(label,height,width,BytesPerPixel,i+1);
+			dim[(i*6)+j]=ddd[j];
+			
+		}
+		//cout<<"at I:"<<i+1<<"\t count="<<q[i]<<"\tX_range:"<<ddd[0]<<"\tYrange:"<<ddd[1]<<endl;
+	}
+	//Dimension
+	for(int i=0;i<16;i++)
+	{
+		/*cout<<"at I:"<<i+1<<"\t count="<<q[i]<<"\tX_range:"<<dim[(i*6)+0]
+		<<"\tYrange:"<<dim[(i*6)+1]<<"\tXmax:"<<dim[(i*6)+2]<<"\tXmin:"
+		<<dim[(i*6)+3]<<"\tYmax:"<<dim[(i*6)+4]<<"\tYmin:"<<dim[(i*6)+5]<<endl;*/
+		
+	}
+	call_compare(q,dim,label);
+	//newimage_temp=convert1_255(newimage_Fixed,height,width,BytesPerPixel);
+	//write output
+	if (!(file=fopen(argv[2],"wb"))) {
+		cout << "Cannot open file: " << argv[2] << endl;
+		exit(1);
+	}
+	fwrite(newimage_Fixed, sizeof(unsigned char), width*height*BytesPerPixel, file);
+	fclose(file);
+	//cout<<"Number of objects Uniquely Identified is: "<<iden<<endl;         //////////////////////////////////////
+	//delete[] newimage_Fixed;
+	//delete[] Imagedata;
+	//delete[] newimage_temp;
+	return 0;
+}
+//END of CPP
+void call_compare(int *q, int *dim, int *label)
+{
+	int cmp=0,c=0,cc=0;
+	int x=0,f=0,y=0,z=0;
+	int *a=new int(x);
+	int *b=new int(y);
+	/*
+	for(int i=0;i<16;i++)
+	{
+		//cout<<"at I:"<<i+1<<"\t count="<<q[i]<<"\tX_range:"<<dim[(i*6)+0]<<"\tYrange:"<<dim[(i*6)+1]<<"\tXmax:"<<dim[(i*6)+2]<<"\tXmin:"<<dim[(i*6)+3]<<"\tYmax:"<<dim[(i*6)+4]<<"\tYmin:"<<dim[(i*6)+5]<<endl;
+		
+	}*/
+	
+	for(int i=0;i<16;i++)
+	{
+		int el=0;
+		for(int j=0;j<16;j++)
+		{
+			if(i!=j)
+			{
+				compare(q,label,dim,i,j,el,0);
+
+			}
+		}
+		if(el==15)
+		{
+			cout<<"\tCompletely Unique Object:"<<i+1<<endl;                    ///////////////////////////////////
+			a[x++]=i+1;
+			iden++;
+		}
+		else if(el==14)
+		{
+			cout<<"\t\t\t\t\t 1 match Unique Object:"<<i+1<<endl;             ///////////////////////////////////
+			a[x++]=i+1;
+			++c;
+			if(c==2)
+				iden++;
+		}
+		else if(el==13)
+		{
+			cout<<"\t\t\t\t\t\t\t\t\t 2 match Unique Objects:"<<i+1<<endl;    /////////////////////////////////////
+			a[x++]=i+1;
+			++cc;
+			if(cc==3)
+				iden++;
+		}
+
+	}
+	
+	/*
+	for(int i=0;i<x;i++)
+		cout<<a[i]<<"\t";
+	cout<<endl<<endl;
+	*/
+	int y1=0;
+	for(int i=1;i<=16;i++)
+	{
+		
+		for(int j=0;j<x;j++)
+		{
+			if(a[j]==i)
+				break;
+			else
+				z++;
+		}
+		if(z==11)
+		{
+			
+			//cout<<"I="<<i<<endl;  //##
+			
+			
+		}
+		
+		z=0;
+	
+	}
+	//from the previous cout statement.  //##
+	b[0]=2;
+	b[1]=6;
+	b[2]=7;
+	b[3]=11;
+	b[4]=13;
+	/*
+	for(int i=0;i<5;i++)
+	{
+		cout<<b[i]<<'\t';
+	}
+	cout<<endl;
+	*/
+	
+	for (int i=0; i<5;i++)
+	{
+		int el=0;
+		for(int j=i+1;j<5;j++)
+		{
+			if(i!=j)
+			{
+				compare(q,label,dim,b[i]-1,b[j]-1,el,1); //check upside downs
+
+			}
+
+		}
+	}
+	//int el=0;
+	//compare2(q,label,dim,1,6,el,1);
+	
+	for (int i=0; i<5;i++)
+	{
+		int el=0;
+		for(int j=i+1;j<5;j++)
+		{
+			if(i!=j)
+			{
+				compare2(q,label,dim,b[i]-1,b[j]-1,el,1); //check rotations
+
+			}
+
+		}
+	}
+	//delete a;
+	//delete b;
+	
+}
+void compare2(int *q,int *label, int * dim, int a, int b, int &el,int op)
+{
+	//cout<<"Welcome"<<endl;
+	int error=0;
+	
+	if( (dim[(a*6)+0]==dim[(b*6)+1]) && (dim[(a*6)+1]==dim[(b*6)+0]) && (abs((q[a]-q[b]))<20) )
+	{
+		int x=0,y=0;
+		//cout<<"L:"<<a+1<<"\tL:"<<b+1<<endl;
+		//rotation check:
+		//a=1;
+		//b=6;
+		
+		x=dim[(b*6)+3]-dim[(a*6)+5];
+		y=dim[(b*6)+5]-dim[(a*6)+3];
+		//cout<<"X_R:"<<x<<"\tY_R:"<<y<<endl;
+		int f=0,g=0;
+		for(int i=dim[(a*6)+3]; i<=dim[(a*6)+2]; i++)
+		{
+			for(int j=dim[(a*6)+5]; j<=dim[(a*6)+4]; j++)
+			{
+				//cout<<"I:"<<i<<"\t J:"<<j<<"\ti:"<<(dim[(b*6)+4]+dim[(b*6)+5])-(i+y)<<"\t j:"<<x+j<<endl;
+				f=(dim[(b*6)+4]+dim[(b*6)+5])-(i+y);
+				g=x+j;
+				//cout<<"I:"<<i<<"\t J:"<<j<<"\ti:"<<f<<"\t j:"<<g<<endl;
+				
+				if((label[(i*372)+j]!=0) && (label[(f*372)+(g)])!=0)
+				{
+					//cout<<"y\t";
+					//cout<<"L 6:"<<label[(i*372)+j]<<"\t\tL 13:"<<label[(((dim[(a*6)+3]+dim[(a*6)+2]-i)-x)*372)+(j+y)]<<endl;
+				}
+				else if((label[(i*372)+j]==0) && (label[(f*372)+(g)])==0)
+				{
+					//cout<<"y\t";
+					//cout<<"L 6:"<<label[(i*372)+j]<<"\t\tL 13:"<<label[(((dim[(a*6)+3]+dim[(a*6)+2]-i)-x)*372)+(j+y)]<<endl;
+				}
+				else
+				{
+					error++;
+					//cout<<"L 6:"<<label[(i*372)+j]<<"\t\tL 13:"<<label[(((dim[(a*6)+3]+dim[(a*6)+2]-i)-x)*372)+(j+y)]<<endl;
+				}
+				
+
+			}
+		}
+		//if(1) check
+		if(error<=30)
+			{
+				cout<<"\tMatches found (Rotation):"<<a+1<<"\t"<<b+1<<"\n";//<<"\tError:"<<error<<endl; //////////////////////////////////////////////
+				//iden++;
+				//el=0;
+			}
+			error=0;
+		
+		
+	}
+
+}
+void compare(int *q,int *label, int * dim, int a, int b, int &el,int op)
+{
+	
+	if(op==0)
+	{
+		if(  ((dim[(a*6)+0] + dim[(a*6)+1]) == (dim[(b*6)+0] + dim[(b*6)+1])) && (dim[(a*6)+0]==dim[(b*6)+0] || dim[(a*6)+0]==dim[(b*6)+1]) && (dim[(a*6)+1]==dim[(b*6)+0] || dim[(a*6)+1]==dim[(b*6)+1]) && (abs((q[a]-q[b]))<20)  )
+		{}
+		else
+		{
+			el++;
+			//cout<<"\n\nNo matches found so far are:"<<a+1<<"\t"<<b+1<<"\t err:"<<el<<"\n\n\n";
+			//ret=0;
+		}
+	}
+	if(op==1)
+	{
+		int x=0;
+		int y=0;
+		int error=0;
+		int c=0;
+		x=dim[(a*6)+3]-dim[(b*6)+3];
+		y=dim[(a*6)+5]-dim[(b*6)+5];
+		//cout<<"\n\nmatches found so far are:"<<a+1<<"\t"<<b+1<<"\n\n\n";
+		if(  ((dim[(a*6)+0] + dim[(a*6)+1]) == (dim[(b*6)+0] + dim[(b*6)+1])) && (dim[(a*6)+0]==dim[(b*6)+0] || dim[(a*6)+0]==dim[(b*6)+1]) && (dim[(a*6)+1]==dim[(b*6)+0] || dim[(a*6)+1]==dim[(b*6)+1]) && (abs((q[a]-q[b]))<20)  )
+		
+		//if(  (dim[(a*6)+0] == dim[(b*6)+0] ) &&  (dim[(a*6)+1]==dim[(b*6)+1]) )
+		
+		{
+			error=0;
+			//cout<<"\n\nmatches found so far are:"<<a+1<<"\t"<<b+1<<"\n";
+			//Upside down check:
+			for(int i=dim[(a*6)+3]; i<=dim[(a*6)+2]; i++)
+			{
+				for(int j=dim[(a*6)+5]; j<=dim[(a*6)+4]; j++)
+				{
+					//cout<<"I:"<<i<<"\t J:"<<j<<"\ti:"<<(dim[(a*6)+3]+dim[(a*6)+2]-i)-x<<"\t j:"<<j+y<<endl;
+					
+					if((label[(i*372)+j]!=0) && (label[((dim[(a*6)+3]+dim[(a*6)+2]-i-x)*372)+(j+y)])!=0)
+					{
+						//cout<<"y\t";
+						//cout<<"L 6:"<<label[(i*372)+j]<<"\t\tL 13:"<<label[(((dim[(a*6)+3]+dim[(a*6)+2]-i)-x)*372)+(j+y)]<<endl;
+					}
+					else if((label[(i*372)+j]==0) && (label[((dim[(a*6)+3]+dim[(a*6)+2]-i-x)*372)+(j+y)])==0)
+					{
+						//cout<<"y\t";
+						//cout<<"L 6:"<<label[(i*372)+j]<<"\t\tL 13:"<<label[(((dim[(a*6)+3]+dim[(a*6)+2]-i)-x)*372)+(j+y)]<<endl;
+					}
+					else
+					{
+						error++;
+						//cout<<"L 6:"<<label[(i*372)+j]<<"\t\tL 13:"<<label[(((dim[(a*6)+3]+dim[(a*6)+2]-i)-x)*372)+(j+y)]<<endl;
+					}
+
+				}
+			}
+			if(error<=30)
+			{
+				cout<<"\tMatches found (Upside down):"<<a+1<<"\t"<<b+1<<"\n";//<<"\tError:"<<error<<endl; //////////////////////////////////////////////
+				iden++;
+				el=0;
+			}
+			error=0;
+		}
+		
+		
+		
+	}
+	
+}
+
+
+int count(int * image_label, int height,int width, int BytesPerPixel,int label)
+{
+	//cout<<"label:"<<label<<endl;
+	int count=0;
+	for(int i=1;i<height-1;i++)
+	{
+		for(int j=1;j<width-1;j++)
+		{
+			if(image_label[(i*width)+j]==label)
+				count++;
+		}
+	}
+	return count;
+
+}
+int *dimension(int * image_label, int height,int width, int BytesPerPixel,int label)
+{
+	//cout<<"label:"<<label<<endl;
+	
+	int i_max=0,i_min=10000,j_max=0,j_min=100000,x_r=0,y_r=0;
+	int *d= new int (i_max);
+	for(int i=1;i<height-1;i++)
+	{
+		for(int j=1;j<width-1;j++)
+		{
+			if(image_label[(i*width)+j]==label)
+			{
+				if(i_max<i)
+					i_max=i;
+				if(i_min>i)
+					i_min=i;
+				if(j_max<j)
+					j_max=j;
+				if(j_min>j)
+					j_min=j;
+
+			}
+		}
+	}
+	//cout<<"Xmax:"<<i_max<<"\tXmin:"<<i_min<<"\tYmax:"<<j_max<<"\tYmin:"<<j_min<<endl;
+	
+
+	x_r=i_max-i_min;
+	y_r=j_max-j_min;
+	d[0]=x_r;
+	d[1]=y_r;
+	d[2]=i_max;
+	d[3]=i_min;
+	d[4]=j_max;
+	d[5]=j_min;
+	return d;
+
+}
+
+int * label_loop(unsigned char * newimage_Fixed,int *label,int height,int width,int BytesPerPixel)
+{
+	
+	int a[8]={0};
+	int label_var=0,min=0;
+	for( int i=0;i<height;i++)
+	{
+		for(int j=0;j<width;j++)
+		{
+			if(newimage_Fixed[(i*width)+j]==1)
+			{
+				//
+				//cout<<"Non-zerp Pixel:"<<endl;
+				if(label[(i*width)+(j)]!=0)
+				{
+					//cout<<"wowo:"<<endl;
+					a[0]=label[(i*width)+(j+1)];
+					a[1]=label[((i-1)*width)+(j+1)];
+					a[2]=label[((i-1)*width)+(j)];
+					a[3]=label[((i-1)*width)+(j-1)];
+					a[4]=label[(i*width)+(j-1)];
+					a[5]=label[((i+1)*width)+(j-1)];
+					a[6]=label[((i+1)*width)+(j)];
+					a[7]=label[((i+1)*width)+(j+1)];
+					/*
+					cout<<"The actual:";
+					for(int k=0;k<8;k++)
+						cout<<a[k]<<"\t";
+					cout<<endl;
+					*/ 
+					min=non_zero_min(a);
+					//cout<<"Min:"<<min<<endl;
+					if(min == 0)
+					{	min=++label_var;
+						label[(i*width)+j]=min;
+						//cout<<"Class label:"<<(int)label[(i*width)+j]<<endl;
+					}
+					else
+					{
+						if(newimage_Fixed[(i*width)+j]!=0)
+						{
+							label[(i*width)+j]=min;
+						}
+						if(newimage_Fixed[(i*width)+(j+1)]!=0)
+						{
+							label[(i*width)+(j+1)]=min;
+						}
+						if(newimage_Fixed[((i-1)*width)+(j+1)]!=0)
+						{
+							label[((i-1)*width)+(j+1)]=min;
+						}
+						if(newimage_Fixed[((i-1)*width)+(j+1)]!=0)
+						{
+							label[((i-1)*width)+(j+1)]=min;
+						}
+						if(newimage_Fixed[((i-1)*width)+(j)]!=0)
+						{
+							label[((i-1)*width)+(j)]=min;
+						}
+						if(newimage_Fixed[((i-1)*width)+(j-1)]!=0)
+						{
+							label[((i-1)*width)+(j-1)]=min;
+						}
+						if(newimage_Fixed[(i*width)+(j-1)]!=0)
+						{
+							label[(i*width)+(j-1)]=min;
+						}
+						if(newimage_Fixed[((i+1)*width)+(j-1)]!=0)
+						{
+							label[((i+1)*width)+(j-1)]=min;
+						}
+						if(newimage_Fixed[((i+1)*width)+(j)]!=0)
+						{
+							label[((i+1)*width)+(j)]=min;
+						}
+						if(newimage_Fixed[((i+1)*width)+(j+1)]!=0)
+						{
+							label[((i+1)*width)+(j+1)]=min;
+						}	
+					}
+				}
+				//cout<<"Class label:"<<(int)label[(i*width)+j]<<endl;
+			}
+		}
+	}
+	/*
+	int var=-2;
+	cout<<"2:"<<endl;
+	for(int i=1;i<height-1;i++)
+	{
+		for(int j=1;j<width-1;j++)
+		{	
+			//cout<<"L"<<endl;
+			if(label[(i*width)+j]!=0 && label[(i*width)+j]>var)
+			{
+				cout<<"I:"<<i<<"J:"<<j<<"Class label:"<<label[(i*width)+j]<<endl;
+				var=label[(i*width)+j];
+			}
+		}
+	}*/
+	return label;
+}
+
+int checker(int num,int *a, int size)
+{
+	//cout<<"siz:"<<size<<endl;
+	int check=1;
+	/*for(int k=0;k<size;k++)
+	{
+		cout<<"\t"<<a[k];
+	}
+	cout<<endl;*/
+	if(size==0)
+		check=1;
+	else
+	{
+		for(int i=0;i<size;i++)
+		{
+			if(a[i]!=0)
+			{
+				if(a[i]==num)
+					check=0;
+			}
+		}
+	}
+	//cout<<check<<endl;
+	return check;
+}
+int non_zero_min(int *a)
+{
+	int min=0;
+	/*
+	for(int k=0;k<8;k++)
+		cout<<a[k]<<"\t";
+	cout<<endl;
+	*/
+	for(int i=0;i<8;i++)
+	{
+		if(a[i]>0)
+		{
+			if(min<a[i])
+			{
+				min=a[i];
+			}
+		}
+	}
+	//cout<<"Return MIN:"<<min<<endl;
+	return min;
+
+}
+
+unsigned char *fixed_Dithering(unsigned char *Image_data, int height, int width, int bytesPerPixel)
+{
+	unsigned char *new_image = new unsigned char [width*height*bytesPerPixel];
+	int threshold_fixed=127;
+	for(int i=0 ; i<height ; i++)
+	{
+		for(int j=0; j<width ; j++)
+		{
+			if(Image_data[(i*width)+j]<=threshold_fixed)
+			{
+				new_image[(i*width)+j]=0;
+			}
+			else if(Image_data[(i*width)+j]>threshold_fixed)
+			{
+				new_image[(i*width)+j]=1;
+			}
+		}
+	}
+
+	return new_image;
+}
+unsigned char *convert1_255(unsigned char *a,int height,int width,int BytesPerPixel)
+{
+	//cout<<"Covert 1 -> 255:\n";
+	for(int i=0;i<height;i++)
+	{
+		for(int j=0;j<width;j++)
+		{
+			if(a[(i*width)+j]==0)
+				continue;
+			else
+			{
+				a[(i*width)+j]=255;
+				//printf("%u\n",a[(i*640)+j]);
+			}
+		}
+	}
+	return a;
+}
+unsigned char *invert(unsigned char *a,int height,int width,int BytesPerPixel)
+{
+	//cout<<"Covert 1 -> 255:\n";
+	for(int i=0;i<height;i++)
+	{
+		for(int j=0;j<width;j++)
+		{
+			if(a[(i*width)+j]==0)
+				a[(i*width)+j]=1;
+			else
+			{
+				a[(i*width)+j]=0;
+				//printf("%u\n",a[(i*640)+j]);
+			}
+		}
+	}
+	return a;
+}
+
+
+
+###########################################################################################

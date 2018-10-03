@@ -1,0 +1,572 @@
+
+"""""""""""""""""""""""""""""""""""""""""
+Final Project for EE 569 Spring 2018
+Program    : LeNet 5 on MNIST dataset
+@authors   : Harikrishna Prabhu     
+USC ID     : 3333077042         
+Email      : hprabhu@usc.edu   
+Dataset    : MNIST dataset
+Instructor : Professor C.C Kuo
+""""""""""""""""""""""""""""""""""""""""""""
+______________________________________________________________________________________
+##############################################
+Q1) Image classification using CNN (only one code)
+##############################################
+
+import numpy as np
+import tensorflow as tf
+import time
+import matplotlib.pyplot as plt
+from tensorflow.examples.tutorials.mnist import input_data
+from keras.models import Sequential
+from keras.layers import Dense, Dropout, Flatten, Reshape
+from keras.layers import Conv2D, MaxPooling2D, AveragePooling2D
+from keras import optimizers
+from time import localtime, strftime
+from keras.callbacks import TensorBoard
+
+#################################################################
+
+#______________________FUNCTIONS USED IN THE PROGRAM ________________#
+# Defining the CNN architecture (for part (b) LeNet5 model)
+def base_model():    
+    # creating model
+    model = Sequential()
+    model.add(Reshape((28,28,1), input_shape=(784,)))
+    # [4] strictly 6 for LeNet 5 (changed and used for part (c))
+    # [5] filter size 5x5
+    # [6] Activation Function: sigmoid, ReLU
+    # [7] Padding = 'SAME' for zero padding, 'VALID' for actual padding that reduces the dimension
+    # [8] Kernel_initializer = RandomNormal, TruncatedNormal, GlorotNormal
+    
+    #convolution layer 1
+    model.add(Conv2D(6, kernel_size=(5, 5), strides=(1, 1),activation='sigmoid',padding='SAME', use_bias=True, kernel_initializer='RandomNormal'))
+    # [9] Pooling layer = MaxPooling or Average Pooling
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    # convolution layer 2. Can have the same number of parameters as C1
+    model.add(Conv2D(16, (5, 5), activation='sigmoid', use_bias=True))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    # [10] to be used only in general CNN and shoud be discarded while performing for LeNet5 architecture
+    model.add(Dropout(0.20))
+    # convolution layer 3. Can have the same number of parameters as C1. After this stage only we obtain pure spectrum of the image
+    model.add(Conv2D(120, kernel_size=(5, 5), strides=(1, 1),activation='sigmoid', use_bias=True))
+    model.add(Flatten())
+    
+    model.add(Dense(84, activation='sigmoid', use_bias=True))
+    model.add(Dense(num_classes, activation='softmax'))
+    
+    # [11] optimizer = SGD, Adam
+    sgd = optimizers.SGD(lr=0.1, momentum=0.5)
+    # Compile model
+    # [12] Loss function = categorical_crossentropy
+    model.compile(loss='categorical_crossentropy',optimizer=sgd, metrics=['accuracy'])
+    return model
+
+# Ploting the accuracy and loss
+def plot_model_history(model_history):
+    fig, axs = plt.subplots(1,2,figsize=(12,5))
+    # summarize history for accuracy
+    axs[0].plot(range(1,len(model_history.history['acc'])+1),model_history.history['acc'])
+    axs[0].plot(range(1,len(model_history.history['val_acc'])+1),model_history.history['val_acc'])
+    axs[0].set_title('Model Accuracy')
+    axs[0].set_ylabel('Accuracy')
+    axs[0].set_xlabel('Epoch')
+    axs[0].legend(['Training', 'Validation'], loc='best')
+    
+    # summarize history for loss
+    axs[1].plot(range(1,len(model_history.history['loss'])+1),model_history.history['loss'])
+    axs[1].plot(range(1,len(model_history.history['val_loss'])+1),model_history.history['val_loss'])
+    axs[1].set_title('Model Loss')
+    axs[1].set_ylabel('Loss')
+    axs[1].set_xlabel('Epoch')
+    axs[1].legend(['Training', 'Validation'], loc='best')
+    plt.show()
+
+def PlotHistory(train_value, test_value, value_is_loss_or_acc):
+    f, ax = plt.subplots()
+    ax.plot([None] + train_value, '^-')
+    ax.plot([None] + test_value, 'x-')
+    # Plot legend and use the best location automatically: loc = 0.
+    ax.legend(['Train ' + value_is_loss_or_acc, 'Validation ' + value_is_loss_or_acc], loc = 'best')
+    ax.set_title('Training/Validation ' + value_is_loss_or_acc + ' per Epoch') #  change to Training/Test
+    ax.set_xlabel('Epoch')
+    ax.set_ylabel(value_is_loss_or_acc)
+#_______________________________MAIN PROGRAM_______________________________________#
+# Parameters for the convolutional Layers:
+batch_size = 128 #[1] 64,128,196,256
+num_classes = 10 #[2] constant for the data as class = 10
+epochs = 200 #[3] 100, 150, 200
+
+# Loading the training, validation and testing data
+# Load training and eval data
+mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
+X_train = mnist.train.images # Returns np.array
+y_train = np.asarray(mnist.train.labels, dtype=np.int32)
+X_test = mnist.test.images # Returns np.array
+y_test = np.asarray(mnist.test.labels, dtype=np.int32)
+X_valid = mnist.validation.images # Returns np.array
+y_valid = np.asarray(mnist.validation.labels, dtype=np.int32)
+# build the model
+model = base_model()
+# print model information
+print(model.summary())
+print('Training the LeNet 5 Model')
+# Fit the model
+start = time.time()
+ts = localtime() # start time
+history = model.fit(X_train, y_train, validation_data=(X_valid, y_valid),epochs=epochs, batch_size=batch_size, verbose=2)
+end = time.time() # end time
+print ("\nModel took %0.2f seconds to train\n"%(end - start))
+
+# Final evaluation of the model
+scores = model.evaluate(X_test, y_test, verbose=2) # test
+score_train = model.evaluate(X_train, y_train, verbose=2) # train data
+'''
+model.save_weights("model_4.h5", overwrite=True)
+model.save('my_model_4.h5', overwrite=True)
+# save as JSON
+json_string = model.to_json()
+'''
+# printing the Error, Loss and the Classification accuracy
+'''
+print("Train Data:")
+print('LeNet 5 Test Error: %.4f%%' % (100-score_train[1]*100))
+print('LeNet 5 Test Loss: %.4f%%' % score_train[0])
+print('LeNet 5 Test Accuracy: %.4f%%' % (score_train[1]*100))
+'''
+print("Test Data:")
+print('LeNet 5 Test Error: %.4f%%' % (100-scores[1]*100))
+print('LeNet 5 Test Loss: %.4f%%' % scores[0])
+print('LeNet 5 Test Accuracy: %.4f%%' % (scores[1]*100))
+
+# Plotting the graphs for Accuracy and Loss
+plot_model_history(history)
+PlotHistory(history.history['loss'], history.history['val_loss'], 'Loss')
+PlotHistory(history.history['acc'], history.history['val_acc'], 'Accuracy')
+
+______________________________________________________________________________
+##############################################
+Q2) Image classification using SAAK (4 codes in use, code 1 is the main code and others are imported here)
+##############################################
+
+
+#_______________MNIST.PY = SAAK__________________#_______(((((1)))))
+'''
+Final Project for EE 569 Spring 2018
+Program    : LeNet 5 on MNIST dataset
+@authors   : Harikrishna Prabhu
+USC ID     : 3333077042
+Email      : hprabhu@usc.edu
+Dataset    : MNIST dataset
+Instructor : Professor C.C Kuo
+'''
+from __future__ import print_function
+
+import argparse
+import os
+import sys
+import time
+
+import tensorflow as tf
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+from tensorflow.contrib.learn.python.learn.datasets.mnist import read_data_sets
+# from scipy.misc import imresize
+from cv2 import resize
+from sklearn.svm import SVC
+
+from network import *
+
+# from network.model import SaakModel
+# from network.util import get_saak_anchors
+
+DATA_DIR = './data/'
+MODEL_DIR = './model-mnist-train-32x32.npy'
+RESTORE_MODEL_FROM = None
+SAAK_COEF_DIR = './coef-mnist-test-32x32.npy'
+RESTORE_COEF_FROM = None
+
+def get_argument():
+    parser = argparse.ArgumentParser(description="Compute Saak Coefficient for MNIST")
+    parser.add_argument("--data-dir", type=str, default=DATA_DIR,
+                        help="directory to store mnist dataset")
+    parser.add_argument("--model-dir", type=str, default=MODEL_DIR,
+                        help="directory to store extracted Saak anchor vectors")
+    parser.add_argument("--restore-model-from", type=str, default=RESTORE_MODEL_FROM,
+                        help="stored saak model file (there will be no training if this parameter is provided)")
+    parser.add_argument("--restore-coef-from", type=str, default=RESTORE_COEF_FROM,
+                        help="stored saak coefficients file (there will be no computation if this parameter is provided)")
+    parser.add_argument("--saak-coef-dir", type=str, default=SAAK_COEF_DIR,
+                        help="di")
+    return parser.parse_args()
+
+def main():
+    args = get_argument()
+    
+    # initialize tf session
+    sess = tf.Session()
+    
+    # load MNIST data
+    mnist = read_data_sets(args.data_dir, reshape=False, validation_size=1000)
+    print("Input MNIST image shape: " + str(mnist.train.images.shape))
+    
+    # resize MNIST images to 32x32
+    train_images = [resize(img,(32,32)) for img in mnist.train.images]
+    train_images = np.expand_dims(train_images, axis=3)
+    print("Resized MNIST images: " + str(train_images.shape))
+    #return train_images
+    
+    # extract saak anchors
+    
+    if args.restore_model_from is None:
+        anchors = get_saak_anchors(train_images, sess)
+        np.save(args.model_dir, {'anchors': anchors})
+    else:
+        print("\nRestore from existing model:")
+        data = np.load(args.restore_model_from).item()
+        anchors = data['anchors']
+        print("Restoration succeed!\n")
+    
+    # build up saak model
+    print("Build up Saak model")
+    model = SaakModel()
+    model.load(anchors)
+
+    # prepare testing images
+    print("Prepare testing images")
+    input_data = tf.placeholder(tf.float32)
+    test_images = [resize(img,(32,32)) for img in mnist.test.images]
+    test_images = np.expand_dims(test_images, axis=3)
+    
+    # compute saak coefficients for testing images
+    if args.restore_coef_from is None:
+        print("Compute saak coefficients")
+        out = model.inference(input_data, layer=0)
+        test_coef = sess.run(out, feed_dict={input_data: test_images})
+        train_coef = sess.run(out, feed_dict={input_data: train_images})
+        # save saak coefficients
+        print("Save saak coefficients")
+        np.save(args.saak_coef_dir, {'train': train_coef, 'test': test_coef})
+    else:
+        print("Restore saak coefficients from existing file")
+        data = np.load(args.restore_coef_from).item()
+        train_coef = data['train']
+        test_coef = data['test']
+    
+    ##Changes after this part to be taken under consideration. (can run for validation = 50000 and higher only, check the SAAK_PCA for further improvement)
+    #np.savetxt("train_image_1.csv", a, delimiter=",")
+    
+    #variable initialization
+    train = np.reshape(train_coef, [train_coef.shape[0], -1])
+    train_label=np.genfromtxt("/Users/rickerish_nah/Downloads/Trainlabels.csv", delimiter=',') # train label
+    test = np.reshape(test_coef, [test_coef.shape[0], -1])
+    test_label=np.genfromtxt("/Users/rickerish_nah/Downloads/Testlabels.csv", delimiter=',') #test label
+    #1
+    classify_accuracy(train, train_label, test, test_label)
+    #2
+    test2 = np.concatenate((test,train[50000:,:]),axis=0)  #making 10000 to 19000 (not sure if test data can be used for more than 10000[default], check with nive)
+    test_label2 = np.concatenate((test_label,train_label[50000:]),axis=0)
+    
+    train2 = train[:50000,:]  #making 59000 to 50000
+    train_label2 = train_label[:50000]
+    
+    classify_accuracy(train2, train_label2, test2, test_label2)
+    
+    #3
+    test3 = np.concatenate((test2,train2[40000:,:]),axis=0) #making 19000 to 29000
+    test_label3 = np.concatenate((test_label2,train_label2[40000:]),axis=0)
+    
+    train3 = train2[:40000,:] #making 50000 to 40000
+    train_label3 = train_label2[:40000]
+    
+    classify_accuracy(train3, train_label3, test3, test_label3)
+
+if __name__ == "__main__":
+    main()
+
+
+#________________________________Utils.py___________________________#_____(((((2)))))
+from __future__ import print_function
+from itertools import product
+import numpy as np
+import tensorflow as tf
+import matplotlib.pyplot as plt
+import cv2
+import scipy.misc
+import _pickle as cPickle
+from sklearn.decomposition import PCA
+from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import confusion_matrix
+from sklearn.cluster import KMeans
+#__________________FUNCTIONS__________________________________#
+# classification using SVM
+def classify_svm(train_feature, train_label, test_feature, test_label): #_______1
+    svc = SVC()
+    svc.fit(train_feature, train_label)
+    accuracy = svc.score(test_feature, test_label)
+    return accuracy
+
+def _extract_batches(images, ks): #_____________________________________________2
+    (num_img, height, width, channel) = images.shape #image dimensions
+    
+    idx = range(0, height - ks + 1, ks) # in case index of overflow
+    idy = range(0, width - ks + 1, ks)
+    id_iter = [(x, y) for x in idx for y in idy]
+
+    batches = np.array([images[:,i:i+ks,j:j+ks,:] for (i, j) in id_iter])
+    print("Extracted image batch shape: " + str(batches.shape))
+
+    batches = np.reshape(batches, [-1, ks*ks*channel])
+    print("Processed image batch shape: " + str(batches.shape))
+
+    return batches
+
+def _fit_anchor_vectors(i,batches, ks, channel_in, lossy_rate=1, augment=True): #_3
+    
+    # removing mean from the image
+    # print("Image mean: ",(np.mean(batches, axis=0)))
+    batches = batches - np.mean(batches, axis=0)
+    # print("Image mean after removal: ",(np.mean(batches, axis=0)))
+    
+    # fit anchor vectors
+    pca = PCA()
+    pca.fit(batches)
+    # get number of anchor vectors to keep based on lossy rate
+    # to get 2048 features:
+    #if so run the SAAK_PCA; as for 2048 tensor cannot be created for greater than 2 GB
+    # for the normal one - 1536; this code works well
+    '''
+    score = pca.explained_variance_ratio_
+    #determines the number of components to hold after each SAAK layer
+    components_to_keep = np.searchsorted(score, lossy_rate)
+    '''
+    
+    # to get 1536 features
+    if i==0:
+        components_to_keep = 3
+    elif i==1:
+        components_to_keep = 4
+    elif i==2:
+        components_to_keep = 7
+    elif i==3:
+        components_to_keep = 6
+    else:
+        components_to_keep = 8
+    print("Number of anchors to keep: " + str(components_to_keep))
+    # get anchor vectors
+    components = pca.components_[:components_to_keep,:]
+    print("Anchor vector shape: " + str(components.shape))
+    assert ks * ks * channel_in == components.shape[1]
+   
+    # performing the S/P conversion
+    if augment:
+        components = np.concatenate([components, -components], axis=0)
+        components_to_keep = components_to_keep * 2
+        print("Augmented anchor vector shape: " + str(components.shape))
+
+    # reshape anchor vectors
+    components = np.reshape(components, [-1, ks, ks, channel_in])
+    print("Reshaped anchor shape: " + str(components.shape))
+
+    # transpose anchor vectors to tensorflow format 
+    # [ks, ks, channel_in, channel_out]
+    components = components.transpose(1, 2, 3, 0)
+    print("Tensorflow formated anchor shape: " + str(components.shape))
+
+    # augment anchors
+    return components, components_to_keep
+
+def conv_and_relu(images, anchors, sess, ks): #_____________________________4
+    #Convolution layer with ReLU activation function
+    kernel = tf.constant(anchors)
+    out = tf.nn.conv2d(images, kernel, strides=[1, 2, 2, 1], padding='SAME')
+    out = tf.nn.relu(out)
+    result = sess.run(out)
+    print("Saak coefficients shape: " + str(result.shape))
+    return result
+
+def classify_accuracy(train, train_label, test, test_label):
+    print("Size:\nTRAIN:",train.shape[0],"\nTEST:",test.shape[0])
+    
+    pca1 = PCA(n_components=128)
+    pca2 = PCA(n_components=64)
+    pca3 = PCA(n_components=32)
+    tra1 = pca1.fit_transform(train)
+    tra2 = pca2.fit_transform(train)
+    tra3 = pca3.fit_transform(train)
+    tst1 = pca1.transform(test)
+    tst2 = pca2.transform(test)
+    tst3 = pca3.transform(test)
+    #SVM
+    svc1 = SVC()
+    svc1.fit(tra1, train_label)
+    #print(svc1)
+    accuracy1 = svc1.score(tst1, test_label)
+    ac1 = svc1.score(tra1, train_label)
+    
+    #s1 = svc1.evaluate(test, test_label, verbose=2)
+    #RF
+    rf1 = RandomForestClassifier()
+    rf1.fit(tra1, train_label)
+    acc1 = rf1.score(tst1, test_label)
+    a1 = rf1.score(tra1, train_label)
+    
+    
+    #SVM 2
+    svc2 = SVC()
+    svc2.fit(tra2, train_label)
+    accuracy2 = svc2.score(tst2, test_label)
+    ac2 = svc2.score(tra2, train_label)
+    #RF 2
+    rf2 = RandomForestClassifier()
+    rf2.fit(tra2, train_label)
+    acc2 = rf2.score(tst2, test_label)
+    a2 = rf2.score(tra2, train_label)
+    
+    #SVM 3
+    svc3 = SVC()
+    svc3.fit(tra3, train_label)
+    y = svc3.predict(tst3)
+    accuracy3 = svc3.score(tst3, test_label)
+    ac3 = svc3.score(tra3, train_label)
+    c = confusion_matrix(y, test_label)
+    # RF 3
+    rf3 = RandomForestClassifier()
+    rf3.fit(tra3, train_label)
+    acc3 = rf3.score(tst3, test_label)
+    a3 = rf3.score(tra3, train_label)
+    
+    
+    
+    print("Using SVM")
+    print("using 128 D reduced features\nTrain accuracy:",ac1)
+    print("Test Accuracy :",accuracy1)
+    print("using 64 D reduced features\nTrain accuracy:",ac2)
+    print("Test Accuracy:",accuracy2)
+    print("using 32 D reduced features\nTrain accuracy:",ac3)
+    print("Test Accuracy:",accuracy3)
+    print("Confusion Matrix:\n",c) #confusion matrix
+    
+    print("Using RF")
+    print("using 128 D reduced features\nTrain accuracy:",a1)
+    print("Test Accuracy :",acc1)
+    print("using 64 D reduced features\nTrain accuracy:",a2)
+    print("Test Accuracy:",acc2)
+    print("using 32 D reduced features\nTrain accuracy:",a3)
+    print("Test Accuracy:",acc3)
+
+
+
+#_________________MAIN FUNCTION HERE_____________________#
+def get_saak_anchors(images, _sess=None, ks=2, max_layer=5, vis=None):
+    if _sess is None:
+        sess = tf.Session()
+    else:
+        sess = _sess
+
+    if images.dtype == 'uint8':
+        images = images.astype(np.float32)
+        images = images / 255.  #normalizing
+
+    anchors = []
+    channel_in = images.shape[3]
+
+    rf_size = []
+    n = min(images.shape[1], images.shape[2])
+    while n >= ks and len(rf_size) < max_layer:
+        n = n // ks
+        rf_size.append(n)
+
+    print("Start to extract Saak anchors:\n")
+
+    for i, _ in enumerate(rf_size):
+        print("Stage %d start:" % (i + 1, ))
+        batches = _extract_batches(images, ks)
+        anchor, channel_out = _fit_anchor_vectors(i,batches, ks, channel_in)
+        anchors.append(anchor)
+        images = conv_and_relu(images, anchor, sess, ks)
+        channel_in = channel_out
+
+        if vis is not None:
+            ind = range(len(batches))
+            np.random.shuffle(ind)
+            ind = ind[:1000]
+            projection = np.matmul([batches[k,:] for k in ind], np.reshape(anchor[:,:,:,:2], [-1,2]))
+            # np.save('p.npy', projection)
+            # np.save('p2.npy', anchor)
+            # np.save('p3.npy', batches)
+            print("projection shape " + str(projection.shape))
+            # plt.plot(projection[:,0], projection[:,1], 'o')
+            plt.scatter(projection[:,0], projection[:,1])
+            # plt.show()
+            plt.savefig('images/' + vis)
+
+        print("Stage %d end\n" % (i + 1, )) 
+
+    if _sess is None:
+        sess.close()
+
+    return anchors
+
+ 
+#________________________________voc12.py___________________________#_____(((((3)))))
+from __future__ import print_function
+import os
+import cv2
+import numpy as np
+
+def load_images(img_list_filename, img_dir, tsize):
+    images = []
+    with open(img_list_filename, 'r') as f:
+        for line in f:
+            img_filename = os.path.join(img_dir, line.strip() + '.jpg')
+            img = cv2.imread(img_filename)
+            img = cv2.resize(img, tsize)
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
+            images.append(img)
+    return np.array(images)
+#________________________________model.py___________________________#_____(((((4))))
+from __future__ import print_function
+import numpy as np
+import tensorflow as tf
+
+class SaakModel(object):
+
+    def __init__(self, trainable=False):
+        self.trainable = trainable
+
+    def load(self, anchors):
+        self.anchors = anchors
+
+    def build(self):
+        pass
+
+    def _create_kernel(self, kernel, name):
+        with tf.name_scope(name):
+            if self.trainable:
+                w = tf.Variable(kernel, name='w')
+            else:
+                w = tf.constant(kernel, name='w')
+        return w
+
+    def inference(self, data, layer=None):
+        """
+        @ data: a placeholder for image batch
+        @       [batch_size, height, width, channel]
+        """
+        if self.anchors is None:
+            raise Exception('No initialization for Saak model!')
+        if layer is None:
+            layer = len(self.anchors)
+        out = data
+        for i, kernel in enumerate(self.anchors):
+            w = self._create_kernel(kernel, 'stage%d' % (i + 1, ))
+            out = tf.nn.conv2d(out, w, strides=[1, 2, 2, 1], padding='SAME')
+            out = tf.nn.relu(out)
+            if i == layer:
+                break
+        return out
+

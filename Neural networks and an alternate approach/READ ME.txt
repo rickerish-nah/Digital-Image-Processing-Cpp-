@@ -1,0 +1,29 @@
+READ ME
+##############################
+Harikrishna Prabhu
+3333077042
+hprabhu@usc.edu
+##############################
+Note: All the programs were coded in PYTHON using Tensorflow and Keras
+Links/Reference: GITHUB
+
+
+Q1: CNN
+
+[1] Lines 46 and 50 represent the convolutional layers. For part (c) where there are 3 Convolutional layers, another of the same code is added
+[2] Parameters are numbered from 1 through 12. These can be changed accordingly to get the best classification accuracy
+
+
+Q2: SAAK
+
+(I) For the given number of components to keep in each stage:(1536) 
+Use the following codes only.
+	mnist.py
+	util.py
+	voc12.py
+	model.py
+(II) For operating for 2048 parameters:
+Additionally use
+
+	SAAK_PCA.py 
+		for further feature reduction and computing the classification accuracy
